@@ -3,107 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Na - Dear My Love</title>
+    <title>Gửi Na - Đoạn Kết Của Sự Chân Thành</title>
     <style>
         body {
             margin: 0; padding: 0;
-            background: #0a0a0a;
+            background: #050505;
             display: flex; justify-content: center; align-items: center;
-            height: 100vh; font-family: 'Times New Roman', serif;
-            color: #d4af37; overflow: hidden;
+            height: 100vh; font-family: 'Playfair Display', serif;
+            color: #fff; overflow: hidden;
         }
 
-        /* Giao diện thư siêu sang */
-        #letter-box {
+        /* Thư Luxury cho Na */
+        #letter-container {
             background: #fff;
-            padding: 50px 30px;
+            padding: 50px 40px;
             width: 85%;
-            max-width: 400px;
+            max-width: 450px;
+            border-radius: 4px;
+            box-shadow: 0 10px 50px rgba(255, 255, 255, 0.1);
             text-align: center;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
-            border: 2px solid #d4af37;
-            transition: 1s ease;
+            border-top: 5px solid #d4af37;
+            transition: all 1s ease-in-out;
             z-index: 10;
         }
 
-        h1 { color: #000; font-size: 1.8rem; margin-bottom: 20px; letter-spacing: 2px; }
-        .text { color: #333; line-height: 1.8; font-style: italic; margin-bottom: 30px; }
+        h1 { color: #111; font-size: 2.2rem; margin-bottom: 20px; letter-spacing: 5px; }
+        .message { color: #333; line-height: 2; font-size: 1.1rem; font-style: italic; margin-bottom: 40px; }
 
         #btn-open {
-            background: #000; color: #d4af37; border: 1px solid #d4af37;
-            padding: 12px 35px; cursor: pointer; font-weight: bold;
-            letter-spacing: 2px; transition: 0.3s;
+            background: #000; color: #fff; border: 1px solid #d4af37;
+            padding: 15px 45px; font-size: 0.9rem; letter-spacing: 4px;
+            cursor: pointer; transition: 0.5s;
         }
 
-        #btn-open:hover { background: #d4af37; color: #000; }
+        #btn-open:hover { background: #d4af37; color: #000; box-shadow: 0 0 20px #d4af37; }
 
-        #status { display: none; text-align: center; animation: fadeIn 2s; }
+        #music-playing {
+            display: none; text-align: center; color: #d4af37;
+            animation: fadeIn 2s forwards;
+        }
+
         @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
         
-        /* Ẩn trình phát */
-        #yt-audio { position: absolute; top: -9999px; left: -9999px; }
+        /* Ẩn trình phát nhạc ẩn danh */
+        #yt-hidden {
+            position: absolute; width: 1px; height: 1px;
+            top: -9999px; left: -9999px; opacity: 0;
+        }
     </style>
 </head>
 <body>
 
-    <div id="letter-box">
-        <h1>Dear Na...</h1>
-        <div class="text">
-            "Có những lời nói chẳng thể cất thành lời, <br>
-            Hãy để âm nhạc thay lòng mình đến bên Na. <br>
-            Chúc Na luôn rạng rỡ và hạnh phúc như chính nụ cười của bạn."
+    <div id="letter-container">
+        <h1>For Na</h1>
+        <div class="message">
+            "Có những giai điệu thay vạn lời muốn nói. <br>
+            Cảm ơn Na đã xuất hiện để thế giới này thêm phần dịu dàng. <br>
+            Hãy lắng nghe lời thì thầm từ trái tim này nhé..."
         </div>
-        <button id="btn-open">MỞ LỜI CHÚC</button>
+        <button id="btn-open">MỞ QUÀ CHO NA</button>
     </div>
 
-    <div id="status">
-        <h2>Đang phát nhạc dành riêng cho Na...</h2>
-        <p>Lắng nghe và cảm nhận nhé!</p>
+    <div id="music-playing">
+        <h2 style="font-size: 1.5rem; letter-spacing: 5px;">MUSIC FOR NA...</h2>
+        <p style="color: #888; font-style: italic;">Đang phát bản nhạc dành riêng cho bạn</p>
     </div>
 
-    <div id="yt-audio"></div>
-
-    <script src="https://www.youtube.com/iframe_api"></script>
+    <div id="yt-hidden"></div>
 
     <script>
-        let player;
-        const musicList = ['8fGulQZ0QHY', 'WAw_8GjjF5M', 'qQDjCiyFIiY'];
-
-        // Hàm này bắt buộc phải đúng tên để API gọi
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-audio', {
-                height: '0',
-                width: '0',
-                videoId: musicList[0],
-                playerVars: {
-                    'autoplay': 0,
-                    'controls': 0,
-                    'playlist': musicList.join(',')
-                },
-                events: {
-                    'onReady': () => console.log("Địt mẹ, nhạc đã sẵn sàng chờ anh Vinh!")
-                }
-            });
-        }
-
         document.getElementById('btn-open').addEventListener('click', function() {
-            // Ẩn lá thư
-            const box = document.getElementById('letter-box');
-            box.style.opacity = '0';
-            box.style.transform = 'scale(0.8)';
+            // 1. Hiệu ứng chuyển cảnh
+            const container = document.getElementById('letter-container');
+            container.style.opacity = '0';
+            container.style.transform = 'translateY(-20px)';
             
             setTimeout(() => {
-                box.style.display = 'none';
-                document.getElementById('status').style.display = 'block';
+                container.style.display = 'none';
+                document.getElementById('music-playing').style.display = 'block';
 
-                // ĐỊT MẸ NHẠC LÊN - LỆNH PLAY PHẢI NẰM TRONG CLICK MỚI CHẠY ĐƯỢC
-                if (player && player.playVideo) {
-                    player.playVideo();
-                    player.setVolume(100);
-                }
+                // 2. ĐỊT MẸ NHẠC LÊN - Bê nguyên link từ code hacker của anh vào
+                const ytContainer = document.getElementById('yt-hidden');
+                // Nhúng trực tiếp iframe với tham số ép chạy nhạc (autoplay=1)
+                ytContainer.innerHTML = `
+                    <iframe 
+                        width="1" height="1" 
+                        src="https://www.youtube.com/embed/8fGulQZ0QHY?autoplay=1&mute=0&loop=1&playlist=8fGulQZ0QHY,WAw_8GjjF5M,qQDjCiyFIiY" 
+                        frameborder="0" 
+                        allow="autoplay; encrypted-media" 
+                        allowfullscreen>
+                    </iframe>
+                `;
+                console.log("[WORM GPT - ANH VINH] Địt mẹ, nhạc đã nổ!");
             }, 800);
         });
     </script>
+
 </body>
 </html>
