@@ -9,22 +9,14 @@
         
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
         
-        #main-container {
-            position: relative; width: 100%; height: 100%;
-            display: flex; justify-content: center; align-items: center;
-        }
-
-        /* Thư Vuýp Chuyên Nghiệp */
         #letter-box {
-            background: rgba(15, 15, 15, 0.95);
-            padding: 40px; border: 2px solid #d4af37;
-            text-align: center; max-width: 450px; border-radius: 5px;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
-            z-index: 100; transition: 0.8s;
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(15, 15, 15, 0.95); padding: 40px; border: 2px solid #d4af37;
+            text-align: center; max-width: 450px; border-radius: 5px; z-index: 100;
         }
 
         h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.2rem; margin-bottom: 20px; letter-spacing: 5px; }
-        .msg { color: #ccc; line-height: 1.8; font-size: 1rem; margin-bottom: 25px; }
+        .msg { color: #ccc; line-height: 1.8; margin-bottom: 25px; }
 
         .signature {
             display: block; font-size: 1.4rem; font-weight: 900; margin-top: 15px;
@@ -34,81 +26,59 @@
         }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 100%; } }
 
-        #btn-hide {
-            background: #fff; color: #000; border: none; padding: 12px 40px;
-            font-weight: 900; cursor: pointer; letter-spacing: 2px;
-        }
+        #btn-hide { background: #fff; color: #000; border: none; padding: 12px 40px; font-weight: 900; cursor: pointer; }
 
-        /* Màn hình hiển thị chữ */
-        #display-center {
-            position: absolute; top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center; z-index: 50;
-            pointer-events: none;
-        }
+        #display-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; pointer-events: none; color: #fff; }
+        #counter { font-size: 8rem; font-weight: 900; }
+        #na-bell { font-size: 4rem; font-weight: 900; letter-spacing: 15px; white-space: nowrap; }
 
-        #counter { font-size: 8rem; font-weight: 900; color: #fff; display: none; }
-        #na-bell { font-size: 5rem; font-weight: 900; color: #fff; letter-spacing: 15px; white-space: nowrap; }
-
-        canvas { position: fixed; top: 0; left: 0; z-index: 10; pointer-events: none; }
+        canvas#world { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; cursor: grab; }
     </style>
 </head>
 <body>
 
-    <div id="main-container">
-        <div id="letter-box">
-            <h1>THƯ VUÝP</h1>
-            <div class="msg">
-                Na Ơi Iu Na Bell! <br>
-                Chúc Na Mau Lớn Mau Cao Mau Mặp Mặp <br>
-                Học Giỏi Tí Cho Đẳng Cấp <br>
-                Nghiện Game Hơn Cho Bá Sàn, <br>
-                Luôn Luôn Tươi Cười Nhé <br>
-                Vin Sike Love Na Bell!
-                <span class="signature">By Vin Sì Ke</span>
-            </div>
-            <button id="btn-hide">ẨN THƯ</button>
+    <div id="letter-box">
+        <h1>THƯ VUÝP</h1>
+        <div class="msg">
+            Na Ơi Iu Na Bell! <br>
+            Chúc Na Mau Lớn Mau Cao Mau Mặp Mặp <br>
+            Học Giỏi Tí Cho Đẳng Cấp <br>
+            Nghiện Game Hơn Cho Bá Sàn, <br>
+            Luôn Luôn Tươi Cười Nhé <br>
+            Vin Sike Love Na Bell!
+            <span class="signature">By Vin Sì Ke</span>
         </div>
-
-        <div id="display-center">
-            <div id="counter"></div>
-            <div id="na-bell"></div>
-        </div>
+        <button id="btn-hide">ẨN THƯ</button>
     </div>
 
-    <canvas id="snowCanvas"></canvas>
+    <div id="display-center">
+        <div id="counter"></div>
+        <div id="na-bell"></div>
+    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <canvas id="world"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <script>
         const btn = document.getElementById('btn-hide');
         const box = document.getElementById('letter-box');
         const counterEl = document.getElementById('counter');
         const naEl = document.getElementById('na-bell');
-        const canvas = document.getElementById('snowCanvas');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        let particles = [];
+        const canvas = document.getElementById('world');
 
         btn.addEventListener('click', () => {
-            box.style.opacity = '0';
-            setTimeout(() => {
-                box.style.display = 'none';
-                startCountdown();
-            }, 800);
+            box.style.display = 'none';
+            startSequence();
         });
 
-        function startCountdown() {
-            counterEl.style.display = 'block';
+        function startSequence() {
             let count = 3;
             let timer = setInterval(() => {
-                if (count > 0) {
-                    counterEl.innerText = count;
-                } else {
+                if (count > 0) counterEl.innerText = count;
+                else {
                     clearInterval(timer);
-                    counterEl.style.display = 'none';
+                    counterEl.innerText = "";
                     showNaBellTyping();
                 }
                 count--;
@@ -123,82 +93,90 @@
                 i++;
                 if (i === text.length) {
                     clearInterval(typeTimer);
-                    setTimeout(disintegrateToFallingSnow, 1500);
+                    setTimeout(() => {
+                        naEl.style.display = 'none';
+                        init3DSnow();
+                    }, 1500);
                 }
-            }, 500); // Hiện từng chữ chậm rãi
+            }, 500);
         }
 
-        function disintegrateToFallingSnow() {
-            html2canvas(naEl, { backgroundColor: null, scale: 2 }).then(cvs => {
-                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height); // Reset
-                const rect = naEl.getBoundingClientRect();
-                const tempCtx = cvs.getContext('2d');
-                const tempData = tempCtx.getImageData(0, 0, cvs.width, cvs.height);
+        function init3DSnow() {
+            canvas.style.display = 'block';
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
 
-                naEl.style.opacity = '0';
+            const particlesCount = 15000;
+            const positions = new Float32Array(particlesCount * 3);
+            const velocities = new Float32Array(particlesCount); // Tốc độ rơi riêng từng hạt
 
-                // Chuyển pixel chữ thành hạt tuyết
-                for (let y = 0; y < cvs.height; y += 4) {
-                    for (let x = 0; x < cvs.width; x += 4) {
-                        const alpha = tempData.data[(y * cvs.width + x) * 4 + 3];
-                        if (alpha > 128) {
-                            particles.push({
-                                x: rect.left + x / 2,
-                                y: rect.top + y / 2,
-                                vx: (Math.random() - 0.5) * 4,
-                                vy: Math.random() * 2 + 1, // Bắt đầu rơi xuống
-                                size: Math.random() * 3 + 1,
-                                opacity: 1
-                            });
-                        }
-                    }
+            for (let i = 0; i < particlesCount; i++) {
+                positions[i * 3] = (Math.random() - 0.5) * 100;     // X
+                positions[i * 3 + 1] = Math.random() * 100;        // Y (bắt đầu từ trên)
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 100; // Z
+                velocities[i] = Math.random() * 0.05 + 0.02;       // Tốc độ rơi nhỏ, mịn
+            }
+
+            const geometry = new THREE.BufferGeometry();
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.8 });
+            const snow = new THREE.Points(geometry, material);
+            scene.add(snow);
+
+            camera.position.z = 5;
+
+            // Xoay bằng tay/chuột
+            let isDragging = false;
+            let previousMouseX = 0;
+            let previousMouseY = 0;
+
+            window.addEventListener('mousedown', () => isDragging = true);
+            window.addEventListener('mouseup', () => isDragging = false);
+            window.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const deltaX = e.clientX - previousMouseX;
+                    const deltaY = e.clientY - previousMouseY;
+                    snow.rotation.y += deltaX * 0.005;
+                    snow.rotation.x += deltaY * 0.005;
                 }
-
-                // Thêm tuyết nền rơi trắng màn hình
-                for (let i = 0; i < 300; i++) {
-                    particles.push({
-                        x: Math.random() * canvas.width,
-                        y: Math.random() * canvas.height - canvas.height,
-                        vx: (Math.random() - 0.5) * 2,
-                        vy: Math.random() * 2 + 2,
-                        size: Math.random() * 3 + 2,
-                        opacity: Math.random()
-                    });
-                }
-
-                animate();
-            });
-        }
-
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            particles.forEach((p, index) => {
-                p.x += p.vx;
-                p.y += p.vy;
-                
-                // Hiệu ứng gió nhẹ cho tuyết
-                p.vx += Math.sin(p.y * 0.01) * 0.02;
-
-                // Nếu tuyết rơi khỏi màn hình thì cho rơi lại từ trên
-                if (p.y > canvas.height) {
-                    p.y = -10;
-                    p.x = Math.random() * canvas.width;
-                }
-
-                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fill();
+                previousMouseX = e.clientX;
+                previousMouseY = e.clientY;
             });
 
-            requestAnimationFrame(animate);
-        }
+            // Touch cho điện thoại
+            window.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                previousMouseX = e.touches[0].clientX;
+                previousMouseY = e.touches[0].clientY;
+            });
+            window.addEventListener('touchend', () => isDragging = false);
+            window.addEventListener('touchmove', (e) => {
+                if (isDragging) {
+                    const deltaX = e.touches[0].clientX - previousMouseX;
+                    const deltaY = e.touches[0].clientY - previousMouseY;
+                    snow.rotation.y += deltaX * 0.005;
+                    snow.rotation.x += deltaY * 0.005;
+                    previousMouseX = e.touches[0].clientX;
+                    previousMouseY = e.touches[0].clientY;
+                }
+            });
 
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+            function animate() {
+                requestAnimationFrame(animate);
+
+                const positions = geometry.attributes.position.array;
+                for (let i = 0; i < particlesCount; i++) {
+                    positions[i * 3 + 1] -= velocities[i]; // Rơi xuống
+                    if (positions[i * 3 + 1] < -50) positions[i * 3 + 1] = 50; // Quay lại đỉnh
+                }
+                geometry.attributes.position.needsUpdate = true;
+
+                renderer.render(scene, camera);
+            }
+            animate();
+        }
     </script>
 </body>
 </html>
