@@ -10,7 +10,7 @@
         * { box-sizing: border-box; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
         
-        /* Cố định khung thư chuẩn cơm mẹ nấu */
+        /* Khung thư cố định cực chuẩn */
         #letter-wrapper {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
@@ -18,22 +18,22 @@
         }
 
         #letter-box {
-            background: rgba(15, 15, 15, 0.98);
+            background: rgba(10, 10, 10, 0.98);
             padding: 40px 30px;
             border: 2px solid #d4af37;
             text-align: center;
             width: 100%;
             max-width: 450px;
             border-radius: 12px;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
-            transition: opacity 0.8s, transform 0.8s;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
+            transition: all 0.8s ease;
         }
 
-        h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.2rem; margin: 0 0 20px 0; letter-spacing: 5px; }
-        .msg { color: #eee; line-height: 1.8; font-size: 1rem; margin-bottom: 25px; text-align: center; }
+        h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.5rem; margin: 0 0 20px 0; letter-spacing: 5px; }
+        .msg { color: #eee; line-height: 1.8; font-size: 1.1rem; margin-bottom: 25px; }
 
         .signature {
-            display: block; font-size: 1.5rem; font-weight: 900; margin-top: 15px;
+            display: block; font-size: 1.6rem; font-weight: 900; margin-top: 15px;
             background: linear-gradient(to right, red, orange, yellow, green, blue, purple, red);
             background-size: 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: rainbow 0.6s linear infinite;
@@ -43,16 +43,16 @@
         #btn-hide {
             background: #fff; color: #000; border: none; padding: 15px 45px;
             font-weight: 900; cursor: pointer; letter-spacing: 2px; border-radius: 5px;
-            text-transform: uppercase; transition: 0.3s;
+            text-transform: uppercase;
         }
 
-        /* Màn hình 3 2 1 và NA Bell */
+        /* Khu vực hiện 3 2 1 và NA Bell */
         #overlay-ui {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             text-align: center; z-index: 500; pointer-events: none; color: #fff;
         }
-        #counter { font-size: 8rem; font-weight: 900; }
-        #na-bell { font-size: 4rem; font-weight: 900; letter-spacing: 12px; white-space: nowrap; }
+        #counter { font-size: 9rem; font-weight: 900; color: #fff; }
+        #na-bell { font-size: 4.5rem; font-weight: 900; letter-spacing: 12px; white-space: nowrap; opacity: 1; transition: opacity 1.5s; }
 
         canvas#world { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10; cursor: move; }
     </style>
@@ -93,7 +93,7 @@
 
         btn.addEventListener('click', () => {
             wrapper.style.opacity = '0';
-            wrapper.style.transform = 'scale(0.9)';
+            wrapper.style.pointerEvents = 'none';
             setTimeout(() => {
                 wrapper.style.display = 'none';
                 startSequence();
@@ -103,8 +103,9 @@
         function startSequence() {
             let count = 3;
             let timer = setInterval(() => {
-                if (count > 0) counterEl.innerText = count;
-                else {
+                if (count > 0) {
+                    counterEl.innerText = count;
+                } else {
                     clearInterval(timer);
                     counterEl.innerText = "";
                     showNaBellTyping();
@@ -121,10 +122,13 @@
                 i++;
                 if (i === text.length) {
                     clearInterval(typeTimer);
+                    // Sau khi hiện xong 1.5s thì cho tan biến hẳn
                     setTimeout(() => {
-                        naEl.style.transition = '1.5s';
                         naEl.style.opacity = '0';
-                        init3DSnow();
+                        setTimeout(() => {
+                            naEl.innerText = ""; // Xóa hẳn chữ
+                            init3DSnow(); // Bật tuyết
+                        }, 1500);
                     }, 1500);
                 }
             }, 500);
@@ -137,7 +141,7 @@
             const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
 
-            const particlesCount = 12000;
+            const particlesCount = 15000;
             const positions = new Float32Array(particlesCount * 3);
             const vels = new Float32Array(particlesCount);
 
@@ -145,23 +149,21 @@
                 positions[i * 3] = (Math.random() - 0.5) * 100;
                 positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
                 positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
-                vels[i] = Math.random() * 0.08 + 0.03; // Tuyết rơi mượt
+                vels[i] = Math.random() * 0.08 + 0.03; 
             }
 
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            // Tuyết to hơn một xíu theo ý anh (size 0.15)
-            const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true, opacity: 0.8 });
+            const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.18, transparent: true, opacity: 0.9 });
             const snow = new THREE.Points(geometry, material);
             scene.add(snow);
 
             camera.position.z = 5;
 
-            // Xoay 360 độ thủ công
             let isDragging = false;
             let prevX = 0, prevY = 0;
 
-            const onMove = (x, y) => {
+            const updateRot = (x, y) => {
                 if (isDragging) {
                     snow.rotation.y += (x - prevX) * 0.005;
                     snow.rotation.x += (y - prevY) * 0.005;
@@ -171,11 +173,10 @@
 
             window.addEventListener('mousedown', () => isDragging = true);
             window.addEventListener('mouseup', () => isDragging = false);
-            window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
-
+            window.addEventListener('mousemove', (e) => updateRot(e.clientX, e.clientY));
             window.addEventListener('touchstart', (e) => { isDragging = true; prevX = e.touches[0].clientX; prevY = e.touches[0].clientY; });
             window.addEventListener('touchend', () => isDragging = false);
-            window.addEventListener('touchmove', (e) => onMove(e.touches[0].clientX, e.touches[0].clientY));
+            window.addEventListener('touchmove', (e) => updateRot(e.touches[0].clientX, e.touches[0].clientY));
 
             function animate() {
                 requestAnimationFrame(animate);
@@ -188,11 +189,14 @@
                 renderer.render(scene, camera);
             }
             animate();
-        }
 
-        window.addEventListener('resize', () => {
-            if(canvas.style.display === 'block') location.reload();
-        });
+            // Fix lỗi load lại khi resize
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
     </script>
 </body>
 </html>
