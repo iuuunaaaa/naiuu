@@ -3,147 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Na - Đoạn Kết Của Sự Chân Thành</title>
+    <title>Gửi Na - Dear My Love</title>
     <style>
         body {
-            margin: 0;
-            padding: 0;
-            background: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            font-family: 'Playfair Display', serif;
-            overflow: hidden;
-        }
-
-        /* Nền tối sâu thẳm */
-        .overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            margin: 0; padding: 0;
             background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
-            z-index: -1;
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
         }
 
-        /* Giao diện thư quý tộc */
-        #letter {
+        /* Giao diện thư lụa cực kỳ chuyên nghiệp */
+        #letter-envelope {
             background: #fff;
-            padding: 50px 40px;
+            padding: 60px 40px;
             width: 85%;
             max-width: 450px;
-            border-radius: 4px;
-            box-shadow: 0 0 100px rgba(212, 175, 55, 0.3);
+            border-radius: 5px;
+            box-shadow: 0 10px 50px rgba(212, 175, 55, 0.2);
             text-align: center;
-            transition: all 1.2s ease-in-out;
-        }
-
-        #letter h1 {
+            transition: all 1s ease-in-out;
             color: #111;
-            font-size: 2rem;
-            margin-bottom: 25px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-        }
-
-        .text {
-            color: #333;
-            line-height: 2.2;
-            font-size: 1.1rem;
-            margin-bottom: 35px;
-            font-style: italic;
-        }
-
-        /* Nút mở thư sang chảnh */
-        #play-btn {
-            background: #000;
-            color: #fff;
             border: 1px solid #d4af37;
-            padding: 15px 40px;
-            font-size: 0.9rem;
-            letter-spacing: 3px;
-            cursor: pointer;
-            transition: 0.5s;
         }
 
-        #play-btn:hover {
-            background: #d4af37;
-            color: #000;
-            box-shadow: 0 0 20px #d4af37;
+        h1 { font-size: 2.2rem; margin-bottom: 20px; letter-spacing: 5px; color: #b8860b; }
+        
+        .content {
+            font-size: 1.1rem; line-height: 2; margin-bottom: 40px;
+            font-style: italic; color: #333;
         }
 
-        /* Màn hình phát nhạc */
-        #playing {
-            display: none;
-            text-align: center;
-            color: #d4af37;
-            animation: fadeIn 2s;
+        #open-btn {
+            background: #000; color: #fff; border: 1px solid #d4af37;
+            padding: 15px 45px; font-size: 0.9rem; letter-spacing: 3px;
+            cursor: pointer; transition: 0.5s;
         }
 
-        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
+        #open-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 20px #d4af37; }
+
+        /* Màn hình hiển thị khi đang phát nhạc */
+        #music-active {
+            display: none; text-align: center; color: #d4af37;
+            animation: fadeIn 2s forwards;
+        }
+
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
     </style>
 </head>
 <body>
 
-    <div class="overlay"></div>
-
-    <div id="letter">
+    <div id="letter-envelope">
         <h1>For Na</h1>
-        <div class="text">
-            "Có những giai điệu thay vạn lời nói, <br>
-            Có những khoảnh khắc là định mệnh đời người. <br>
-            Gửi đến Na tất cả sự chân thành nhất từ tận đáy lòng..."
+        <div class="content">
+            "Có những bản tình ca chỉ dành cho những người đặc biệt. <br>
+            Cảm ơn Na đã luôn là một phần dịu dàng trong cuộc sống này. <br>
+            Hãy để giai điệu này thay lời muốn nói..."
         </div>
-        <button id="play-btn">LẮNG NGHE TRÁI TIM</button>
+        <button id="open-btn">MỞ QUÀ TẶNG NA</button>
     </div>
 
-    <div id="playing">
-        <h2 style="font-size: 1.5rem; letter-spacing: 4px;">MUSIC IS ON...</h2>
-        <p style="color: #666; font-style: italic;">Enjoy this moment, Na</p>
+    <div id="music-active">
+        <h2 style="font-size: 1.5rem; letter-spacing: 5px;">MUSIC FOR YOU...</h2>
+        <p style="color: #888; font-style: italic;">Giai điệu đang vang lên vì Na</p>
     </div>
 
-    <div id="player" style="display:none"></div>
+    <div id="youtube-audio" style="position: absolute; top: -9999px;"></div>
 
     <script>
-        // Tải API của YouTube
-        var tag = document.createElement('script');
+        // Bê nguyên bộ link nhạc từ code của ANH VINH
+        const musicList = ['8fGulQZ0QHY', 'WAw_8GjjF5M', 'qQDjCiyFIiY'];
+        let player;
+
+        // Tải YouTube IFrame API
+        const tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
-        var firstScriptTag = document.getElementsByTagName('script')[0];
+        const firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        var player;
         function onYouTubeIframeAPIReady() {
-            player = new YT.Player('player', {
-                height: '0',
-                width: '0',
-                videoId: '8fGulQZ0QHY', // ID bài nhạc của anh
+            player = new YT.Player('youtube-audio', {
+                height: '0', width: '0',
+                videoId: musicList[0], // Lấy bài đầu tiên
                 playerVars: {
                     'autoplay': 0,
                     'controls': 0,
-                    'disablekb': 1,
-                    'modestbranding': 1
-                },
-                events: {
-                    'onReady': onPlayerReady
+                    'loop': 1,
+                    'playlist': musicList.join(',') // Tạo danh sách phát
                 }
             });
         }
 
-        function onPlayerReady(event) {
-            // Player đã sẵn sàng, chờ anh click
-        }
-
-        document.getElementById('play-btn').addEventListener('click', function() {
-            // Ẩn thư
-            document.getElementById('letter').style.opacity = '0';
-            document.getElementById('letter').style.transform = 'scale(0.8)';
+        document.getElementById('open-btn').addEventListener('click', function() {
+            // Hiệu ứng ẩn thư
+            const envelope = document.getElementById('letter-envelope');
+            envelope.style.opacity = '0';
+            envelope.style.transform = 'scale(0.9)';
             
             setTimeout(() => {
-                document.getElementById('letter').style.display = 'none';
-                document.getElementById('playing').style.display = 'block';
+                envelope.style.display = 'none';
+                document.getElementById('music-active').style.display = 'block';
                 
-                // ĐỊT MẸ, NHẠC LÊN!
-                player.playVideo();
-                player.unMute(); // Đảm bảo không bị tắt tiếng
+                // ĐỊT MẸ, KÍCH HOẠT NHẠC NGAY LẬP TỨC
+                if (player) {
+                    player.playVideo();
+                    player.unMute();
+                }
             }, 1000);
         });
     </script>
