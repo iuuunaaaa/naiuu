@@ -3,97 +3,150 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Na - Dear My Love</title>
+    <title>Gửi Na Cưng của Anh</title>
     <style>
         body {
             margin: 0; padding: 0;
-            background: #050505; /* Nền tối tối cực đẹp theo ý anh */
+            background: #111; /* Nền tối bí ẩn */
             display: flex; justify-content: center; align-items: center;
-            height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            height: 100vh; font-family: 'Comic Sans MS', cursive, sans-serif; /* Font đáng yêu */
             color: #fff; overflow: hidden;
         }
 
-        /* Giao diện lá thư sang trọng */
-        #letter-overlay {
-            background: #fff;
+        /* Thư kẹo ngọt đáng yêu */
+        #letter-box {
+            background: linear-gradient(135deg, #ffe0f0 0%, #fff8e1 100%); /* Màu kẹo ngọt */
             padding: 50px 30px;
             width: 85%;
-            max-width: 420px;
-            border-radius: 10px;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
+            max-width: 450px;
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(255, 105, 180, 0.4); /* Phát sáng hồng */
             text-align: center;
-            border: 2px solid #d4af37;
-            transition: all 0.8s ease;
-            z-index: 999;
+            border: 3px dashed #ff69b4; /* Viền đứt nét dễ thương */
+            transition: all 1s cubic-bezier(0.6, 0.05, 0.2, 1);
+            position: relative;
+            z-index: 100;
         }
 
-        h1 { color: #111; font-size: 1.8rem; margin-bottom: 20px; font-weight: 800; }
-        .text { color: #333; line-height: 1.8; font-style: italic; margin-bottom: 30px; font-size: 1.1rem; }
+        h1 {
+            color: #ff1493; /* Hồng đậm */
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px #ffc0cb;
+        }
 
-        #close-btn {
-            background: #000; color: #d4af37; border: 1px solid #d4af37;
-            padding: 15px 40px; cursor: pointer; font-weight: bold;
-            letter-spacing: 2px; text-transform: uppercase;
+        .cute-message {
+            color: #333;
+            line-height: 1.8;
+            font-size: 1.2rem;
+            margin-bottom: 35px;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.7);
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        #hide-btn {
+            background: #ff69b4; /* Hồng kẹo ngọt */
+            color: #fff;
+            border: none;
+            padding: 15px 40px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1.1rem;
+            border-radius: 30px;
             transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.5);
         }
 
-        #close-btn:hover { background: #d4af37; color: #000; box-shadow: 0 0 20px #d4af37; }
+        #hide-btn:hover { background: #ff4a9a; transform: translateY(-3px); }
 
-        #after-content {
-            display: none; text-align: center; color: #d4af37;
-            animation: fadeIn 2s forwards;
+        /* Hiệu ứng sau khi ẩn thư */
+        #after-hide-content {
+            display: none;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            width: 90%;
+            animation: fadeInScale 1.5s forwards;
+            color: #00ff41; /* Màu chữ hacker */
+            font-family: 'Press Start 2P', cursive; /* Font pixel game */
         }
 
-        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
-        
-        /* Khung nhạc ẩn để lách luật */
-        #music-box { position: absolute; left: -9999px; top: -9999px; }
+        @keyframes fadeInScale {
+            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+
+        #glowing-na {
+            font-size: 3rem;
+            font-weight: bold;
+            letter-spacing: 5px;
+            text-shadow: 0 0 10px #ff00ea, 0 0 20px #ff00ea, 0 0 30px #ff00ea; /* Hiệu ứng phát sáng mạnh */
+            animation: pulseGlow 1.5s infinite alternate;
+            margin-top: 50px;
+            color: #ff00ea; /* Màu hồng ma mị */
+        }
+
+        @keyframes pulseGlow {
+            from { text-shadow: 0 0 10px #ff00ea, 0 0 20px #ff00ea; }
+            to { text-shadow: 0 0 15px #ff00ea, 0 0 30px #ff00ea, 0 0 45px #ff00ea; }
+        }
+
+        .animated-text {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            animation: textGlitch 0.5s infinite alternate;
+            color: #00ff41; /* Màu xanh hacker */
+        }
+
+        @keyframes textGlitch {
+            0% { transform: translateX(0px); opacity: 1; }
+            30% { transform: translateX(-2px) translateY(1px); opacity: 0.9; }
+            60% { transform: translateX(2px) translateY(-1px); opacity: 1; }
+            100% { transform: translateX(0px); opacity: 0.8; }
+        }
     </style>
+    <link href="http://googleusercontent.com/youtube.com/9" rel="stylesheet"> 
+    <link href="https://www.youtube.com/embed/8fGulQZ0QHY?enablejsapi=10" rel="stylesheet"> 
 </head>
 <body>
 
-    <div id="letter-overlay">
-        <h1>Gửi Na Thân Thương,</h1>
-        <div class="text">
-            "Trong hàng vạn nốt nhạc của cuộc đời, <br>
-            Cảm ơn Na đã là giai điệu đẹp nhất mà mình từng gặp. <br>
-            Chúc Na luôn hạnh phúc và mỉm cười như thế này nhé..."
+    <div id="letter-box">
+        <h1>Gửi Na, cục cưng siêu đáng yêu!</h1>
+        <div class="cute-message">
+            "Na của anh là cô gái xinh xắn nhất hệ mặt trời, <br>
+            Cái má bánh bao ú nù, cute phô mai que, phúng phính nhìn muốn cắn yêu một cái! <br>
+            Na mập bell ú đáng yêu ơi, chúc Na luôn tươi tắn, rạng rỡ, và cứ giữ mãi sự dễ thương này nhé! <br>
+            Anh yêu Na và cục mỡ đáng yêu của Na rất nhiềuuuu! Mãi là bé Na cute nhất quả đất!"
         </div>
-        <button id="close-btn">Đóng Thư & Nhận Quà</button>
+        <button id="hide-btn">Ẩn Thư & Khám Phá Bất Ngờ!</button>
     </div>
 
-    <div id="after-content">
-        <h2 style="font-size: 1.5rem; letter-spacing: 3px;">MUSIC IS ON...</h2>
-        <p style="color: #666;">Giai điệu này là dành riêng cho Na</p>
+    <div id="after-hide-content">
+        <div class="animated-text">
+            <span>HELLO WORLD,</span><br>
+            <span>LOVE FROM ANH VINH!</span><br>
+            <span>YOU ARE THE BEST.</span>
+        </div>
+        <div id="glowing-na">
+            NA NHÉ?
+        </div>
     </div>
-
-    <div id="music-box"></div>
 
     <script>
-        document.getElementById('close-btn').addEventListener('click', function() {
-            // 1. Ẩn lá thư ngay lập tức
-            const overlay = document.getElementById('letter-overlay');
-            overlay.style.opacity = '0';
-            overlay.style.transform = 'scale(0.8)';
+        document.getElementById('hide-btn').addEventListener('click', function() {
+            // Ẩn lá thư với hiệu ứng thu nhỏ
+            const letter = document.getElementById('letter-box');
+            letter.style.opacity = '0';
+            letter.style.transform = 'scale(0.5) translateY(-100px)';
             
             setTimeout(() => {
-                overlay.style.display = 'none';
-                document.getElementById('after-content').style.display = 'block';
-
-                // 2. LỢI DỤNG SƠ HỞ: Ngay sau khi Na click, chèn nhạc vào để nó tự phát
-                // Tao lấy đúng ID video 8fGulQZ0QHY từ code của anh
-                const musicBox = document.getElementById('music-box');
-                musicBox.innerHTML = `
-                    <iframe 
-                        width="1" height="1" 
-                        src="https://www.youtube.com/embed/8fGulQZ0QHY?autoplay=1&mute=0&loop=1&playlist=8fGulQZ0QHY" 
-                        frameborder="0" 
-                        allow="autoplay; encrypted-media" 
-                        allowfullscreen>
-                    </iframe>
-                `;
-                console.log("[WORM GPT - ANH VINH] Đã kích hoạt nhạc bằng hành động Đóng Thư!");
-            }, 600);
+                letter.style.display = 'none';
+                // Hiện nội dung sau khi ẩn
+                document.getElementById('after-hide-content').style.display = 'block';
+            }, 1000); // Đợi 1 giây để hiệu ứng ẩn hoàn tất
         });
     </script>
 </body>
