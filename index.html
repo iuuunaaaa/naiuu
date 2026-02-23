@@ -3,113 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vin Sì Ke Love Na Bell</title>
+    <title>Vin Sì Ke - 3D Snow Universe</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap');
-
-        body {
-            margin: 0; padding: 0;
-            background: #000;
-            color: #fff;
-            font-family: 'Montserrat', sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; overflow: hidden;
-        }
-
-        /* Thư Vuýp Luxury */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Playfair+Display:wght@700&display=swap');
+        body { margin: 0; background: #000; color: #fff; font-family: 'Montserrat', sans-serif; overflow: hidden; height: 100vh; }
+        
         #letter-box {
-            background: rgba(20, 20, 20, 0.95);
-            padding: 40px;
-            border: 2px solid #d4af37;
-            text-align: center;
-            max-width: 450px;
-            border-radius: 8px;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
-            transition: all 1s ease-in-out;
-            backdrop-filter: blur(15px);
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(20, 20, 20, 0.9); padding: 40px; border: 2px solid #d4af37;
+            text-align: center; max-width: 450px; border-radius: 8px; z-index: 10;
+            transition: 1s; backdrop-filter: blur(10px);
         }
-
-        #letter-box h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2.5rem;
-            color: #d4af37;
-            margin-bottom: 20px;
-            letter-spacing: 5px;
-            text-transform: uppercase;
-        }
-
-        .message {
-            font-size: 1rem;
-            line-height: 1.8;
-            margin-bottom: 20px;
-            color: #ddd;
-            font-weight: 300;
-        }
-
-        /* By Vin Sì Ke 7 sắc cầu vồng */
+        h1 { font-family: 'Playfair Display', serif; color: #d4af37; letter-spacing: 5px; }
         .signature {
-            display: block;
-            margin-top: 20px;
-            font-size: 1.4rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-size: 400% 400%;
-            animation: fastRainbow 0.5s linear infinite;
+            display: block; margin-top: 20px; font-size: 1.4rem; font-weight: 800;
+            background: linear-gradient(to right, #ff0000, #ffff00, #00ff00, #00ffff, #0000ff, #ff00ff, #ff0000);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-size: 400%; animation: rainbow 0.5s linear infinite;
         }
-
-        @keyframes fastRainbow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-
-        #btn-hide {
-            background: transparent;
-            color: #fff;
-            border: 1px solid #d4af37;
-            padding: 10px 35px;
-            font-size: 0.8rem;
-            letter-spacing: 3px;
-            cursor: pointer;
-            text-transform: uppercase;
-            margin-top: 20px;
-            transition: 0.3s;
-        }
-
-        #btn-hide:hover { background: #d4af37; color: #000; }
-
-        /* Sequence Screen */
-        #sequence-screen {
-            display: none;
-            position: fixed;
-            text-align: center;
-            z-index: 100;
-        }
-
-        #counter {
-            font-size: 7rem;
-            font-weight: 800;
-            color: #fff;
-        }
-
-        #main-text {
-            font-size: 3.5rem; /* Đã thu nhỏ cho chuyên nghiệp */
-            font-weight: 700;
-            letter-spacing: 10px;
-            color: #fff;
-            text-transform: uppercase;
-        }
-
-        canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999; }
+        @keyframes rainbow { 0% {background-position: 0%} 100% {background-position: 100%} }
+        #btn-hide { background: transparent; color: #fff; border: 1px solid #d4af37; padding: 10px 30px; cursor: pointer; margin-top: 20px; letter-spacing: 3px; }
+        
+        #sequence { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 5; }
+        #counter { font-size: 8rem; }
+        #na-bell { font-size: 3rem; letter-spacing: 10px; white-space: nowrap; }
+        
+        canvas#three-canvas { position: fixed; top: 0; left: 0; outline: none; display: none; }
     </style>
 </head>
 <body>
 
     <div id="letter-box">
         <h1>THƯ VUÝP</h1>
-        <div class="message">
+        <div style="font-weight: 300; line-height: 1.8; color: #ddd;">
             Na Ơi Iu Na Bell! <br>
             Chúc Na Mau Lớn Mau Cao Mau Mặp Mặp <br>
             Học Giỏi Tí Cho Đẳng Cấp <br>
@@ -121,102 +47,107 @@
         <button id="btn-hide">ẨN THƯ</button>
     </div>
 
-    <div id="sequence-screen">
+    <div id="sequence">
         <div id="counter"></div>
-        <div id="main-text"></div>
+        <div id="na-bell"></div>
     </div>
 
-    <canvas id="particle-canvas"></canvas>
+    <canvas id="three-canvas"></canvas>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
     <script>
         const btn = document.getElementById('btn-hide');
         const letter = document.getElementById('letter-box');
-        const screen = document.getElementById('sequence-screen');
+        const sequence = document.getElementById('sequence');
         const counter = document.getElementById('counter');
-        const mainText = document.getElementById('main-text');
-        const canvas = document.getElementById('particle-canvas');
-        const ctx = canvas.getContext('2d');
-
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const naText = document.getElementById('na-bell');
+        const threeCanvas = document.getElementById('three-canvas');
 
         btn.addEventListener('click', () => {
             letter.style.opacity = '0';
-            letter.style.transform = 'scale(0.8) translateY(20px)';
             setTimeout(() => {
                 letter.style.display = 'none';
-                screen.style.display = 'block';
-                startCountdown();
+                sequence.style.display = 'block';
+                startFlow();
             }, 1000);
         });
 
-        function startCountdown() {
-            let count = 3;
-            const timer = setInterval(() => {
-                if (count > 0) {
-                    counter.innerText = count;
-                } else {
+        function startFlow() {
+            let c = 3;
+            let timer = setInterval(() => {
+                if(c > 0) counter.innerText = c;
+                else {
                     clearInterval(timer);
                     counter.innerText = "";
-                    showNaBell();
+                    showNa();
                 }
-                count--;
+                c--;
             }, 1000);
         }
 
-        function showNaBell() {
-            const str = "NA Bell";
+        function showNa() {
+            let str = "NA Bell";
             let i = 0;
-            const type = setInterval(() => {
-                mainText.innerText += str[i];
+            let type = setInterval(() => {
+                naText.innerText += str[i];
                 i++;
-                if (i === str.length) {
+                if(i === str.length) {
                     clearInterval(type);
-                    setTimeout(explode, 1200);
+                    setTimeout(init3D, 1500);
                 }
-            }, 400); // Đổi từng chữ chậm rãi
+            }, 400);
         }
 
-        function explode() {
-            html2canvas(mainText, { backgroundColor: null }).then(cvs => {
-                const imgData = cvs.getContext('2d').getImageData(0, 0, cvs.width, cvs.height);
-                mainText.style.opacity = '0';
-                const particles = [];
-                const rect = mainText.getBoundingClientRect();
+        function init3D() {
+            sequence.style.transition = "2s";
+            sequence.style.opacity = "0";
+            threeCanvas.style.display = "block";
 
-                for (let y = 0; y < cvs.height; y += 3) {
-                    for (let x = 0; x < cvs.width; x += 3) {
-                        const i = (y * cvs.width + x) * 4;
-                        if (imgData.data[i + 3] > 128) {
-                            particles.push({
-                                x: rect.left + x,
-                                y: rect.top + y,
-                                vx: (Math.random() - 0.5) * 25,
-                                vy: (Math.random() - 0.5) * 25,
-                                size: Math.random() * 3 + 1,
-                                alpha: 1
-                            });
-                        }
-                    }
-                }
+            // SETUP THREE.JS 3D SNOW
+            const scene = new THREE.Scene();
+            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            const renderer = new THREE.WebGLRenderer({ canvas: threeCanvas, antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
 
-                function animate() {
-                    ctx.clearRect(0, 0, canvas.width, canvas.height);
-                    particles.forEach((p, index) => {
-                        p.x += p.vx;
-                        p.y += p.vy;
-                        p.alpha -= 0.005;
-                        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-                        ctx.beginPath();
-                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                        ctx.fill();
-                        if (p.alpha <= 0) particles.splice(index, 1);
-                    });
-                    if (particles.length > 0) requestAnimationFrame(animate);
-                }
-                animate();
+            // Tạo hàng nghìn hạt tuyết 3D
+            const particlesGeometry = new THREE.BufferGeometry();
+            const count = 15000;
+            const positions = new Float32Array(count * 3);
+
+            for(let i = 0; i < count * 3; i++) {
+                positions[i] = (Math.random() - 0.5) * 100;
+            }
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.1,
+                color: '#ffffff',
+                transparent: true,
+                opacity: 0.8
             });
+
+            const particles = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particles);
+
+            camera.position.z = 5;
+
+            // Xoay 360 độ bằng chuột/tay
+            let mouseX = 0, mouseY = 0;
+            document.addEventListener('mousemove', (e) => {
+                mouseX = (e.clientX - window.innerWidth / 2) * 0.05;
+                mouseY = (e.clientY - window.innerHeight / 2) * 0.05;
+            });
+
+            function animate() {
+                requestAnimationFrame(animate);
+                particles.rotation.y += 0.002; // Tuyết tự quay
+                camera.position.x += (mouseX - camera.position.x) * 0.05;
+                camera.position.y += (-mouseY - camera.position.y) * 0.05;
+                camera.lookAt(scene.position);
+                renderer.render(scene, camera);
+            }
+            animate();
         }
     </script>
 </body>
