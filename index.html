@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Premium For Na</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Inter:wght@300&display=swap');
 
         body {
             margin: 0; padding: 0;
@@ -16,121 +16,159 @@
             height: 100vh; overflow: hidden;
         }
 
-        /* Khung thư tối giản sang trọng */
-        #main-container {
+        /* Thư chuyên nghiệp sang trọng */
+        #letter-box {
             text-align: center;
-            transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
-            z-index: 10;
+            transition: all 1.5s ease;
+            max-width: 500px;
         }
 
-        .letter-content {
-            font-size: 1.5rem;
-            font-weight: 300;
+        #letter-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
             letter-spacing: 2px;
-            margin-bottom: 50px;
-            color: #efefef;
-            max-width: 600px;
-            line-height: 1.6;
+            font-style: italic;
+            margin-bottom: 30px;
+            color: #d4af37; /* Màu vàng Luxury */
         }
 
-        /* Nút Ẩn Thư tinh tế */
         #btn-hide {
             background: transparent;
             color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 15px 40px;
+            border: 1px solid #d4af37;
+            padding: 12px 35px;
             font-size: 0.8rem;
-            letter-spacing: 5px;
+            letter-spacing: 4px;
             cursor: pointer;
             text-transform: uppercase;
             transition: 0.5s;
         }
 
-        #btn-hide:hover {
-            background: #fff;
-            color: #000;
-            border-color: #fff;
-        }
+        #btn-hide:hover { background: #d4af37; color: #000; }
 
-        /* Màn hình hiển thị VIP */
-        #vip-screen {
-            position: fixed;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
+        /* Màn hình đếm ngược và hiện chữ */
+        #display-screen {
             display: none;
+            position: fixed;
             text-align: center;
         }
 
-        #dynamic-text {
-            font-size: 4rem;
-            font-weight: 600;
-            letter-spacing: 15px;
+        #counter, #main-text {
+            font-size: 5rem;
+            font-weight: 700;
+            letter-spacing: 10px;
             text-transform: uppercase;
-            white-space: nowrap;
-            color: #fff;
-            /* Hiệu ứng phát sáng nhẹ cao cấp */
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        /* Hiệu ứng ẩn siêu đẹp */
-        .hide-effect {
-            opacity: 0 !important;
-            filter: blur(20px);
-            transform: scale(1.1);
+        /* Canvas cho hiệu ứng tuyết tan biến */
+        #particle-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-    <div id="main-container">
-        <div class="letter-content">
-            Chào Na, đây là một điều đặc biệt dành cho bạn.
-        </div>
-        <button id="btn-hide">Ẩn Thư</button>
+    <div id="letter-box">
+        <h2>"Gửi đến Na những điều bình yên nhất..."</h2>
+        <button id="btn-hide">Chấp nhận</button>
     </div>
 
-    <div id="vip-screen">
-        <div id="dynamic-text"></div>
+    <div id="display-screen">
+        <div id="counter"></div>
+        <div id="main-text"></div>
     </div>
 
+    <canvas id="particle-canvas"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         const btn = document.getElementById('btn-hide');
-        const container = document.getElementById('main-container');
-        const vipScreen = document.getElementById('vip-screen');
-        const textElement = document.getElementById('dynamic-text');
+        const letter = document.getElementById('letter-box');
+        const screen = document.getElementById('display-screen');
+        const counter = document.getElementById('counter');
+        const mainText = document.getElementById('main-text');
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
 
-        const targetText = "NA Bell";
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
         btn.addEventListener('click', () => {
-            // Hiệu ứng ẩn siêu mượt
-            container.classList.add('hide-effect');
+            // Ẩn thư từ từ
+            letter.style.opacity = '0';
+            letter.style.transform = 'translateY(-20px)';
             
             setTimeout(() => {
-                container.style.display = 'none';
-                vipScreen.style.display = 'block';
-                
-                // Bắt đầu hiện chữ kiểu VIP, đổi từng chữ chậm rãi
-                startVipAnimation();
+                letter.style.display = 'none';
+                screen.style.display = 'block';
+                startSequence();
             }, 1500);
         });
 
-        function startVipAnimation() {
-            let currentStr = "";
-            let i = 0;
-
-            // Đánh chữ chậm rãi từng chữ một
-            const interval = setInterval(() => {
-                if (i < targetText.length) {
-                    currentStr += targetText[i];
-                    textElement.innerText = currentStr;
-                    i++;
-                } else {
-                    clearInterval(interval);
-                    // Sau khi hiện xong thì đổi sang màu vàng Luxury nhẹ
-                    textElement.style.transition = "2s";
-                    textElement.style.color = "#d4af37";
+        function startSequence() {
+            let count = 3;
+            const timer = setInterval(() => {
+                counter.innerText = count;
+                if (count === 0) {
+                    clearInterval(timer);
+                    counter.innerText = "";
+                    showNaBell();
                 }
-            }, 400); // Đổi chậm 0.4s mỗi chữ theo ý ANH VINH
+                count--;
+            }, 1000); // Chậm 1 giây mỗi số
+        }
+
+        function showNaBell() {
+            const str = "NA Bell";
+            let i = 0;
+            const type = setInterval(() => {
+                mainText.innerText += str[i];
+                i++;
+                if (i === str.length) {
+                    clearInterval(type);
+                    setTimeout(disintegrate, 2000); // Hiện xong 2s rồi tan biến
+                }
+            }, 500); // Hiện từng chữ chậm rãi
+        }
+
+        function disintegrate() {
+            html2canvas(mainText, { backgroundColor: null }).then(cvs => {
+                const imgData = cvs.getContext('2d').getImageData(0, 0, cvs.width, cvs.height);
+                mainText.style.opacity = '0';
+                
+                const particles = [];
+                for (let y = 0; y < cvs.height; y += 2) {
+                    for (let x = 0; x < cvs.width; x += 2) {
+                        const i = (y * cvs.width + x) * 4;
+                        if (imgData.data[i + 3] > 0) {
+                            particles.push({
+                                x: x + (window.innerWidth / 2 - cvs.width / 2),
+                                y: y + (window.innerHeight / 2 - cvs.height / 2),
+                                vx: (Math.random() - 0.5) * 2,
+                                vy: (Math.random() - 1.5) * 2,
+                                size: Math.random() * 2,
+                                alpha: 1
+                            });
+                        }
+                    }
+                }
+
+                function animate() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particles.forEach((p, index) => {
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        p.alpha -= 0.005;
+                        ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
+                        ctx.fillRect(p.x, p.y, p.size, p.size);
+                        if (p.alpha <= 0) particles.splice(index, 1);
+                    });
+                    if (particles.length > 0) requestAnimationFrame(animate);
+                }
+                animate();
+            });
         }
     </script>
 </body>
