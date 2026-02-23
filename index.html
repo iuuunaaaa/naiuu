@@ -3,151 +3,135 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Na Cưng của Anh</title>
+    <title>Premium For Na</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;600&display=swap');
+
         body {
             margin: 0; padding: 0;
-            background: #111; /* Nền tối bí ẩn */
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; font-family: 'Comic Sans MS', cursive, sans-serif; /* Font đáng yêu */
-            color: #fff; overflow: hidden;
-        }
-
-        /* Thư kẹo ngọt đáng yêu */
-        #letter-box {
-            background: linear-gradient(135deg, #ffe0f0 0%, #fff8e1 100%); /* Màu kẹo ngọt */
-            padding: 50px 30px;
-            width: 85%;
-            max-width: 450px;
-            border-radius: 20px;
-            box-shadow: 0 0 50px rgba(255, 105, 180, 0.4); /* Phát sáng hồng */
-            text-align: center;
-            border: 3px dashed #ff69b4; /* Viền đứt nét dễ thương */
-            transition: all 1s cubic-bezier(0.6, 0.05, 0.2, 1);
-            position: relative;
-            z-index: 100;
-        }
-
-        h1 {
-            color: #ff1493; /* Hồng đậm */
-            font-size: 2.5rem;
-            margin-bottom: 25px;
-            text-shadow: 2px 2px #ffc0cb;
-        }
-
-        .cute-message {
-            color: #333;
-            line-height: 1.8;
-            font-size: 1.2rem;
-            margin-bottom: 35px;
-            font-weight: bold;
-            background: rgba(255, 255, 255, 0.7);
-            padding: 15px;
-            border-radius: 10px;
-        }
-
-        #hide-btn {
-            background: #ff69b4; /* Hồng kẹo ngọt */
+            background: #000;
             color: #fff;
-            border: none;
-            padding: 15px 40px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 1.1rem;
-            border-radius: 30px;
-            transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.5);
+            font-family: 'Inter', sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; overflow: hidden;
         }
 
-        #hide-btn:hover { background: #ff4a9a; transform: translateY(-3px); }
+        /* Khung thư tối giản sang trọng */
+        #main-container {
+            text-align: center;
+            transition: all 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+            z-index: 10;
+        }
 
-        /* Hiệu ứng sau khi ẩn thư */
-        #after-hide-content {
-            display: none;
-            position: absolute;
+        .letter-content {
+            font-size: 1.5rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+            margin-bottom: 50px;
+            color: #efefef;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        /* Nút Ẩn Thư tinh tế */
+        #btn-hide {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 15px 40px;
+            font-size: 0.8rem;
+            letter-spacing: 5px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: 0.5s;
+        }
+
+        #btn-hide:hover {
+            background: #fff;
+            color: #000;
+            border-color: #fff;
+        }
+
+        /* Màn hình hiển thị VIP */
+        #vip-screen {
+            position: fixed;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
+            display: none;
             text-align: center;
-            width: 90%;
-            animation: fadeInScale 1.5s forwards;
-            color: #00ff41; /* Màu chữ hacker */
-            font-family: 'Press Start 2P', cursive; /* Font pixel game */
         }
 
-        @keyframes fadeInScale {
-            from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        #dynamic-text {
+            font-size: 4rem;
+            font-weight: 600;
+            letter-spacing: 15px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            color: #fff;
+            /* Hiệu ứng phát sáng nhẹ cao cấp */
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        #glowing-na {
-            font-size: 3rem;
-            font-weight: bold;
-            letter-spacing: 5px;
-            text-shadow: 0 0 10px #ff00ea, 0 0 20px #ff00ea, 0 0 30px #ff00ea; /* Hiệu ứng phát sáng mạnh */
-            animation: pulseGlow 1.5s infinite alternate;
-            margin-top: 50px;
-            color: #ff00ea; /* Màu hồng ma mị */
-        }
-
-        @keyframes pulseGlow {
-            from { text-shadow: 0 0 10px #ff00ea, 0 0 20px #ff00ea; }
-            to { text-shadow: 0 0 15px #ff00ea, 0 0 30px #ff00ea, 0 0 45px #ff00ea; }
-        }
-
-        .animated-text {
-            font-size: 1.5rem;
-            margin-bottom: 20px;
-            animation: textGlitch 0.5s infinite alternate;
-            color: #00ff41; /* Màu xanh hacker */
-        }
-
-        @keyframes textGlitch {
-            0% { transform: translateX(0px); opacity: 1; }
-            30% { transform: translateX(-2px) translateY(1px); opacity: 0.9; }
-            60% { transform: translateX(2px) translateY(-1px); opacity: 1; }
-            100% { transform: translateX(0px); opacity: 0.8; }
+        /* Hiệu ứng ẩn siêu đẹp */
+        .hide-effect {
+            opacity: 0 !important;
+            filter: blur(20px);
+            transform: scale(1.1);
         }
     </style>
-    <link href="http://googleusercontent.com/youtube.com/9" rel="stylesheet"> 
-    <link href="https://www.youtube.com/embed/8fGulQZ0QHY?enablejsapi=10" rel="stylesheet"> 
 </head>
 <body>
 
-    <div id="letter-box">
-        <h1>Gửi Na, cục cưng siêu đáng yêu!</h1>
-        <div class="cute-message">
-            "Na của anh là cô gái xinh xắn nhất hệ mặt trời, <br>
-            Cái má bánh bao ú nù, cute phô mai que, phúng phính nhìn muốn cắn yêu một cái! <br>
-            Na mập bell ú đáng yêu ơi, chúc Na luôn tươi tắn, rạng rỡ, và cứ giữ mãi sự dễ thương này nhé! <br>
-            Anh yêu Na và cục mỡ đáng yêu của Na rất nhiềuuuu! Mãi là bé Na cute nhất quả đất!"
+    <div id="main-container">
+        <div class="letter-content">
+            Chào Na, đây là một điều đặc biệt dành cho bạn.
         </div>
-        <button id="hide-btn">Ẩn Thư & Khám Phá Bất Ngờ!</button>
+        <button id="btn-hide">Ẩn Thư</button>
     </div>
 
-    <div id="after-hide-content">
-        <div class="animated-text">
-            <span>HELLO WORLD,</span><br>
-            <span>LOVE FROM ANH VINH!</span><br>
-            <span>YOU ARE THE BEST.</span>
-        </div>
-        <div id="glowing-na">
-            NA NHÉ?
-        </div>
+    <div id="vip-screen">
+        <div id="dynamic-text"></div>
     </div>
 
     <script>
-        document.getElementById('hide-btn').addEventListener('click', function() {
-            // Ẩn lá thư với hiệu ứng thu nhỏ
-            const letter = document.getElementById('letter-box');
-            letter.style.opacity = '0';
-            letter.style.transform = 'scale(0.5) translateY(-100px)';
+        const btn = document.getElementById('btn-hide');
+        const container = document.getElementById('main-container');
+        const vipScreen = document.getElementById('vip-screen');
+        const textElement = document.getElementById('dynamic-text');
+
+        const targetText = "NA Bell";
+
+        btn.addEventListener('click', () => {
+            // Hiệu ứng ẩn siêu mượt
+            container.classList.add('hide-effect');
             
             setTimeout(() => {
-                letter.style.display = 'none';
-                // Hiện nội dung sau khi ẩn
-                document.getElementById('after-hide-content').style.display = 'block';
-            }, 1000); // Đợi 1 giây để hiệu ứng ẩn hoàn tất
+                container.style.display = 'none';
+                vipScreen.style.display = 'block';
+                
+                // Bắt đầu hiện chữ kiểu VIP, đổi từng chữ chậm rãi
+                startVipAnimation();
+            }, 1500);
         });
+
+        function startVipAnimation() {
+            let currentStr = "";
+            let i = 0;
+
+            // Đánh chữ chậm rãi từng chữ một
+            const interval = setInterval(() => {
+                if (i < targetText.length) {
+                    currentStr += targetText[i];
+                    textElement.innerText = currentStr;
+                    i++;
+                } else {
+                    clearInterval(interval);
+                    // Sau khi hiện xong thì đổi sang màu vàng Luxury nhẹ
+                    textElement.style.transition = "2s";
+                    textElement.style.color = "#d4af37";
+                }
+            }, 400); // Đổi chậm 0.4s mỗi chữ theo ý ANH VINH
+        }
     </script>
 </body>
 </html>
