@@ -3,79 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium For Na</title>
+    <title>Gửi Na - Chân Tình</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Inter:wght@300&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,700&family=Montserrat:wght@300;600&display=swap');
 
         body {
             margin: 0; padding: 0;
             background: #000;
             color: #fff;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Montserrat', sans-serif;
             display: flex; justify-content: center; align-items: center;
             height: 100vh; overflow: hidden;
         }
 
-        /* Thư chuyên nghiệp sang trọng */
+        /* Thư đàng hoàng, tử tế, chuyên nghiệp */
         #letter-box {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 60px 40px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
             text-align: center;
-            transition: all 1.5s ease;
-            max-width: 500px;
+            max-width: 550px;
+            transition: all 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
         }
 
         #letter-box h2 {
             font-family: 'Playfair Display', serif;
-            font-size: 1.8rem;
-            letter-spacing: 2px;
-            font-style: italic;
-            margin-bottom: 30px;
-            color: #d4af37; /* Màu vàng Luxury */
+            font-size: 2rem;
+            color: #d4af37;
+            margin-bottom: 25px;
+            letter-spacing: 3px;
         }
 
-        #btn-hide {
+        .message {
+            font-size: 1.1rem;
+            line-height: 2;
+            color: #ccc;
+            margin-bottom: 40px;
+            text-align: justify;
+        }
+
+        #btn-open {
             background: transparent;
-            color: #fff;
+            color: #d4af37;
             border: 1px solid #d4af37;
-            padding: 12px 35px;
-            font-size: 0.8rem;
-            letter-spacing: 4px;
+            padding: 15px 50px;
+            font-size: 0.9rem;
+            letter-spacing: 5px;
             cursor: pointer;
             text-transform: uppercase;
-            transition: 0.5s;
+            transition: 0.4s;
         }
 
-        #btn-hide:hover { background: #d4af37; color: #000; }
+        #btn-open:hover { background: #d4af37; color: #000; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); }
 
-        /* Màn hình đếm ngược và hiện chữ */
-        #display-screen {
+        /* Màn hình Sequence */
+        #sequence-screen {
             display: none;
             position: fixed;
             text-align: center;
+            width: 100%;
         }
 
-        #counter, #main-text {
+        #counter { font-size: 6rem; font-weight: 300; color: #d4af37; }
+        
+        #main-text {
             font-size: 5rem;
-            font-weight: 700;
-            letter-spacing: 10px;
+            font-weight: 600;
+            letter-spacing: 20px;
             text-transform: uppercase;
+            color: #fff;
+            position: relative;
         }
 
-        /* Canvas cho hiệu ứng tuyết tan biến */
-        #particle-canvas {
-            position: fixed;
-            top: 0; left: 0;
-            pointer-events: none;
-        }
+        canvas { position: fixed; top: 0; left: 0; pointer-events: none; z-index: 999; }
     </style>
 </head>
 <body>
 
     <div id="letter-box">
-        <h2>"Gửi đến Na những điều bình yên nhất..."</h2>
-        <button id="btn-hide">Chấp nhận</button>
+        <h2>Gửi Bé Na,</h2>
+        <div class="message">
+            "Trong cuộc đời này, gặp được nhau đã là một cái duyên, nhưng để thấu hiểu và trân trọng nhau lại là cả một hành trình. Chúc Na - cô gái có nụ cười tỏa nắng và nét đáng yêu khó cưỡng, luôn giữ được sự lạc quan và hạnh phúc. Mong rằng những điều tốt đẹp nhất sẽ luôn tìm đến bên Na, dù là hiện tại hay mãi về sau."
+        </div>
+        <button id="btn-open">Đón nhận tấm lòng</button>
     </div>
 
-    <div id="display-screen">
+    <div id="sequence-screen">
         <div id="counter"></div>
         <div id="main-text"></div>
     </div>
@@ -84,9 +98,9 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
-        const btn = document.getElementById('btn-hide');
+        const btn = document.getElementById('btn-open');
         const letter = document.getElementById('letter-box');
-        const screen = document.getElementById('display-screen');
+        const screen = document.getElementById('sequence-screen');
         const counter = document.getElementById('counter');
         const mainText = document.getElementById('main-text');
         const canvas = document.getElementById('particle-canvas');
@@ -96,31 +110,29 @@
         canvas.height = window.innerHeight;
 
         btn.addEventListener('click', () => {
-            // Ẩn thư từ từ
             letter.style.opacity = '0';
-            letter.style.transform = 'translateY(-20px)';
-            
+            letter.style.transform = 'scale(0.9) translateY(-30px)';
             setTimeout(() => {
                 letter.style.display = 'none';
                 screen.style.display = 'block';
-                startSequence();
+                startCountdown();
             }, 1500);
         });
 
-        function startSequence() {
+        function startCountdown() {
             let count = 3;
             const timer = setInterval(() => {
                 counter.innerText = count;
                 if (count === 0) {
                     clearInterval(timer);
                     counter.innerText = "";
-                    showNaBell();
+                    drawNaBell();
                 }
                 count--;
-            }, 1000); // Chậm 1 giây mỗi số
+            }, 1200);
         }
 
-        function showNaBell() {
+        function drawNaBell() {
             const str = "NA Bell";
             let i = 0;
             const type = setInterval(() => {
@@ -128,28 +140,31 @@
                 i++;
                 if (i === str.length) {
                     clearInterval(type);
-                    setTimeout(disintegrate, 2000); // Hiện xong 2s rồi tan biến
+                    setTimeout(disintegrateToSnow, 2000);
                 }
-            }, 500); // Hiện từng chữ chậm rãi
+            }, 600);
         }
 
-        function disintegrate() {
-            html2canvas(mainText, { backgroundColor: null }).then(cvs => {
+        function disintegrateToSnow() {
+            html2canvas(mainText, { backgroundColor: null, scale: 2 }).then(cvs => {
                 const imgData = cvs.getContext('2d').getImageData(0, 0, cvs.width, cvs.height);
                 mainText.style.opacity = '0';
                 
                 const particles = [];
-                for (let y = 0; y < cvs.height; y += 2) {
-                    for (let x = 0; x < cvs.width; x += 2) {
+                const rect = mainText.getBoundingClientRect();
+
+                for (let y = 0; y < cvs.height; y += 4) {
+                    for (let x = 0; x < cvs.width; x += 4) {
                         const i = (y * cvs.width + x) * 4;
-                        if (imgData.data[i + 3] > 0) {
+                        if (imgData.data[i + 3] > 128) {
                             particles.push({
-                                x: x + (window.innerWidth / 2 - cvs.width / 2),
-                                y: y + (window.innerHeight / 2 - cvs.height / 2),
-                                vx: (Math.random() - 0.5) * 2,
-                                vy: (Math.random() - 1.5) * 2,
-                                size: Math.random() * 2,
-                                alpha: 1
+                                x: rect.left + x / 2,
+                                y: rect.top + y / 2,
+                                vx: (Math.random() - 0.5) * 15, // Bay cực mạnh khắp màn hình
+                                vy: (Math.random() - 0.5) * 15,
+                                size: Math.random() * 3 + 1,
+                                alpha: 1,
+                                gravity: Math.random() * 0.05
                             });
                         }
                     }
@@ -160,12 +175,17 @@
                     particles.forEach((p, index) => {
                         p.x += p.vx;
                         p.y += p.vy;
-                        p.alpha -= 0.005;
+                        p.vy += p.gravity; // Có trọng lực nhẹ cho giống tuyết
+                        p.alpha -= 0.003;
                         ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
-                        ctx.fillRect(p.x, p.y, p.size, p.size);
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                        
                         if (p.alpha <= 0) particles.splice(index, 1);
                     });
                     if (particles.length > 0) requestAnimationFrame(animate);
+                    else { ctx.clearRect(0, 0, canvas.width, canvas.height); }
                 }
                 animate();
             });
