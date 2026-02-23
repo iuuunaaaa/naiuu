@@ -16,40 +16,41 @@
             height: 100vh; overflow: hidden;
         }
 
-        /* Thư chuyên nghiệp Luxury */
+        /* Thư Vuýp Luxury */
         #letter-box {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 50px 40px;
-            border: 1px solid #d4af37;
+            background: rgba(20, 20, 20, 0.95);
+            padding: 40px;
+            border: 2px solid #d4af37;
             text-align: center;
-            max-width: 500px;
-            border-radius: 4px;
-            box-shadow: 0 0 40px rgba(0, 0, 0, 1);
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-            backdrop-filter: blur(10px);
+            max-width: 450px;
+            border-radius: 8px;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.2);
+            transition: all 1s ease-in-out;
+            backdrop-filter: blur(15px);
         }
 
-        h2 {
+        #letter-box h1 {
             font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
+            font-size: 2.5rem;
             color: #d4af37;
-            margin-bottom: 25px;
-            letter-spacing: 2px;
+            margin-bottom: 20px;
+            letter-spacing: 5px;
+            text-transform: uppercase;
         }
 
         .message {
-            font-size: 1.1rem;
+            font-size: 1rem;
             line-height: 1.8;
-            margin-bottom: 30px;
-            color: #efefef;
+            margin-bottom: 20px;
+            color: #ddd;
             font-weight: 300;
         }
 
-        /* Chữ By Vin Sì Ke 7 sắc cầu vồng đổi màu nhanh */
+        /* By Vin Sì Ke 7 sắc cầu vồng */
         .signature {
             display: block;
-            margin-top: 25px;
-            font-size: 1.5rem;
+            margin-top: 20px;
+            font-size: 1.4rem;
             font-weight: 800;
             text-transform: uppercase;
             background: linear-gradient(to right, #ff0000, #ff7f00, #ffff00, #00ff00, #0000ff, #4b0082, #9400d3, #ff0000);
@@ -67,19 +68,19 @@
         #btn-hide {
             background: transparent;
             color: #fff;
-            border: 1px solid #fff;
-            padding: 12px 40px;
+            border: 1px solid #d4af37;
+            padding: 10px 35px;
             font-size: 0.8rem;
-            letter-spacing: 4px;
+            letter-spacing: 3px;
             cursor: pointer;
             text-transform: uppercase;
             margin-top: 20px;
-            transition: 0.4s;
+            transition: 0.3s;
         }
 
-        #btn-hide:hover { background: #fff; color: #000; }
+        #btn-hide:hover { background: #d4af37; color: #000; }
 
-        /* Sequence 3 2 1 màu trắng */
+        /* Sequence Screen */
         #sequence-screen {
             display: none;
             position: fixed;
@@ -88,16 +89,15 @@
         }
 
         #counter {
-            font-size: 8rem;
+            font-size: 7rem;
             font-weight: 800;
-            color: #ffffff; /* Trắng chuẩn */
-            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            color: #fff;
         }
 
         #main-text {
-            font-size: 6rem;
-            font-weight: 800;
-            letter-spacing: 15px;
+            font-size: 3.5rem; /* Đã thu nhỏ cho chuyên nghiệp */
+            font-weight: 700;
+            letter-spacing: 10px;
             color: #fff;
             text-transform: uppercase;
         }
@@ -108,7 +108,7 @@
 <body>
 
     <div id="letter-box">
-        <h2>Na Ơi Iu Na Bell!</h2>
+        <h1>THƯ VUÝP</h1>
         <div class="message">
             Na Ơi Iu Na Bell! <br>
             Chúc Na Mau Lớn Mau Cao Mau Mặp Mặp <br>
@@ -118,7 +118,7 @@
             Vin Sike Love Na Bell!
             <span class="signature">By Vin Sì Ke</span>
         </div>
-        <button id="btn-hide">Ẩn Thư</button>
+        <button id="btn-hide">ẨN THƯ</button>
     </div>
 
     <div id="sequence-screen">
@@ -143,7 +143,7 @@
 
         btn.addEventListener('click', () => {
             letter.style.opacity = '0';
-            letter.style.transform = 'translateY(-50px) scale(0.9)';
+            letter.style.transform = 'scale(0.8) translateY(20px)';
             setTimeout(() => {
                 letter.style.display = 'none';
                 screen.style.display = 'block';
@@ -173,9 +173,9 @@
                 i++;
                 if (i === str.length) {
                     clearInterval(type);
-                    setTimeout(explode, 1500);
+                    setTimeout(explode, 1200);
                 }
-            }, 500);
+            }, 400); // Đổi từng chữ chậm rãi
         }
 
         function explode() {
@@ -192,9 +192,9 @@
                             particles.push({
                                 x: rect.left + x,
                                 y: rect.top + y,
-                                vx: (Math.random() - 0.5) * 30, // Nổ bay khắp màn hình
-                                vy: (Math.random() - 0.5) * 30,
-                                size: Math.random() * 4 + 1,
+                                vx: (Math.random() - 0.5) * 25,
+                                vy: (Math.random() - 0.5) * 25,
+                                size: Math.random() * 3 + 1,
                                 alpha: 1
                             });
                         }
@@ -206,7 +206,7 @@
                     particles.forEach((p, index) => {
                         p.x += p.vx;
                         p.y += p.vy;
-                        p.alpha -= 0.004;
+                        p.alpha -= 0.005;
                         ctx.fillStyle = `rgba(255, 255, 255, ${p.alpha})`;
                         ctx.beginPath();
                         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
