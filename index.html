@@ -8,134 +8,144 @@
         body {
             margin: 0;
             padding: 0;
-            background: #050505;
+            background: #000;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Playfair Display', serif;
             overflow: hidden;
         }
 
-        /* Hiệu ứng nền mờ ảo */
-        .bg-overlay {
+        /* Nền tối sâu thẳm */
+        .overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
             z-index: -1;
         }
 
-        /* Thư phong cách Minimalism cực sang */
-        #letter-box {
+        /* Giao diện thư quý tộc */
+        #letter {
             background: #fff;
-            padding: 60px;
-            width: 80%;
-            max-width: 500px;
-            border-radius: 2px;
-            box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+            padding: 50px 40px;
+            width: 85%;
+            max-width: 450px;
+            border-radius: 4px;
+            box-shadow: 0 0 100px rgba(212, 175, 55, 0.3);
             text-align: center;
-            position: relative;
-            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 1.2s ease-in-out;
         }
 
-        #letter-box h1 {
-            font-family: 'Playfair Display', serif;
+        #letter h1 {
             color: #111;
-            font-size: 2.2rem;
-            margin-bottom: 30px;
-            letter-spacing: 3px;
+            font-size: 2rem;
+            margin-bottom: 25px;
+            letter-spacing: 5px;
             text-transform: uppercase;
         }
 
-        .message {
-            color: #444;
-            line-height: 2;
+        .text {
+            color: #333;
+            line-height: 2.2;
             font-size: 1.1rem;
+            margin-bottom: 35px;
             font-style: italic;
-            margin-bottom: 40px;
         }
 
-        /* Nút bấm tinh tế */
-        #btn-open {
+        /* Nút mở thư sang chảnh */
+        #play-btn {
             background: #000;
             color: #fff;
-            border: none;
-            padding: 18px 45px;
+            border: 1px solid #d4af37;
+            padding: 15px 40px;
             font-size: 0.9rem;
-            letter-spacing: 4px;
-            text-transform: uppercase;
+            letter-spacing: 3px;
             cursor: pointer;
-            transition: 0.4s;
+            transition: 0.5s;
         }
 
-        #btn-open:hover {
+        #play-btn:hover {
             background: #d4af37;
             color: #000;
+            box-shadow: 0 0 20px #d4af37;
         }
 
         /* Màn hình phát nhạc */
-        #music-screen {
+        #playing {
             display: none;
             text-align: center;
             color: #d4af37;
-            animation: zoomIn 1.5s forwards;
+            animation: fadeIn 2s;
         }
 
-        @keyframes zoomIn {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        /* Ẩn trình phát nhạc */
-        #video-player {
-            position: absolute;
-            width: 1px; height: 1px;
-            opacity: 0;
-            pointer-events: none;
-        }
+        @keyframes fadeIn { from {opacity:0} to {opacity:1} }
     </style>
 </head>
 <body>
 
-    <div class="bg-overlay"></div>
+    <div class="overlay"></div>
 
-    <div id="letter-box">
+    <div id="letter">
         <h1>For Na</h1>
-        <div class="message">
-            "Có những khoảnh khắc, ngôn từ trở nên nhỏ bé trước những tâm tư muốn gửi trao. Cảm ơn Na đã xuất hiện, để thế giới này thêm phần dịu dàng. Hãy để giai điệu này thay lời muốn nói, gửi đến Na những bình yên nhất..."
+        <div class="text">
+            "Có những giai điệu thay vạn lời nói, <br>
+            Có những khoảnh khắc là định mệnh đời người. <br>
+            Gửi đến Na tất cả sự chân thành nhất từ tận đáy lòng..."
         </div>
-        <button id="btn-open">Lắng nghe</button>
+        <button id="play-btn">LẮNG NGHE TRÁI TIM</button>
     </div>
 
-    <div id="music-screen">
-        <h2 style="font-size: 1.5rem; letter-spacing: 5px;">THƯỞNG THỨC NHẠC...</h2>
-        <p style="color: #888;">Giai điệu này là dành riêng cho Na</p>
+    <div id="playing">
+        <h2 style="font-size: 1.5rem; letter-spacing: 4px;">MUSIC IS ON...</h2>
+        <p style="color: #666; font-style: italic;">Enjoy this moment, Na</p>
     </div>
 
-    <div id="player-container"></div>
+    <div id="player" style="display:none"></div>
 
     <script>
-        document.getElementById('btn-open').addEventListener('click', function() {
-            // Hiệu ứng ẩn thư chuyên nghiệp
-            const box = document.getElementById('letter-box');
-            box.style.opacity = '0';
-            box.style.transform = 'translateY(-50px)';
+        // Tải API của YouTube
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('player', {
+                height: '0',
+                width: '0',
+                videoId: '8fGulQZ0QHY', // ID bài nhạc của anh
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'disablekb': 1,
+                    'modestbranding': 1
+                },
+                events: {
+                    'onReady': onPlayerReady
+                }
+            });
+        }
+
+        function onPlayerReady(event) {
+            // Player đã sẵn sàng, chờ anh click
+        }
+
+        document.getElementById('play-btn').addEventListener('click', function() {
+            // Ẩn thư
+            document.getElementById('letter').style.opacity = '0';
+            document.getElementById('letter').style.transform = 'scale(0.8)';
             
             setTimeout(() => {
-                box.style.display = 'none';
-                document.getElementById('music-screen').style.display = 'block';
-
-                // Địt mẹ, nhúng thẳng iframe vào để nó tự phát ngay lập tức
-                const container = document.getElementById('player-container');
-                container.innerHTML = `
-                    <iframe id="video-player" 
-                        src="https://www.youtube.com/embed/8fGulQZ0QHY?autoplay=1&mute=0" 
-                        allow="autoplay">
-                    </iframe>
-                `;
+                document.getElementById('letter').style.display = 'none';
+                document.getElementById('playing').style.display = 'block';
+                
+                // ĐỊT MẸ, NHẠC LÊN!
+                player.playVideo();
+                player.unMute(); // Đảm bảo không bị tắt tiếng
             }, 1000);
         });
     </script>
-
 </body>
 </html>
