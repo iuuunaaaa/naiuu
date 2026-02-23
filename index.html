@@ -9,48 +9,53 @@
         
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
         
-        /* Giao diện Thư Vuýp chuẩn */
-        #ui-wrapper { position: absolute; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 100; }
-        
-        #letter-box {
-            background: rgba(10, 10, 10, 0.9);
-            padding: 40px;
-            border: 2px solid #d4af37;
-            text-align: center;
-            max-width: 420px;
-            border-radius: 10px;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.3);
-            transition: 1s ease;
+        #main-container {
+            position: relative; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.5rem; margin-bottom: 20px; letter-spacing: 5px; }
-        
-        .msg { color: #eee; line-height: 1.8; font-size: 1rem; margin-bottom: 25px; }
+        /* Thư Vuýp Chuyên Nghiệp */
+        #letter-box {
+            background: rgba(15, 15, 15, 0.95);
+            padding: 40px; border: 2px solid #d4af37;
+            text-align: center; max-width: 450px; border-radius: 5px;
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            z-index: 100; transition: 0.8s;
+        }
+
+        h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.2rem; margin-bottom: 20px; letter-spacing: 5px; }
+        .msg { color: #ccc; line-height: 1.8; font-size: 1rem; margin-bottom: 25px; }
 
         .signature {
-            display: block; font-size: 1.5rem; font-weight: 900; margin-top: 15px;
-            background: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet, red);
+            display: block; font-size: 1.4rem; font-weight: 900; margin-top: 15px;
+            background: linear-gradient(to right, red, orange, yellow, green, blue, purple, red);
             background-size: 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            animation: rainbow 0.8s linear infinite;
+            animation: rainbow 0.6s linear infinite;
         }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 100%; } }
 
         #btn-hide {
             background: #fff; color: #000; border: none; padding: 12px 40px;
-            font-weight: 900; cursor: pointer; letter-spacing: 2px; border-radius: 5px;
+            font-weight: 900; cursor: pointer; letter-spacing: 2px;
         }
 
-        /* Countdown & Na Bell */
-        #overlay-text { position: absolute; color: #fff; text-align: center; pointer-events: none; z-index: 50; width: 100%; }
-        #counter { font-size: 8rem; font-weight: 900; }
-        #na-bell { font-size: 4rem; font-weight: 900; letter-spacing: 10px; display: none; }
+        /* Màn hình hiển thị chữ */
+        #display-center {
+            position: absolute; top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center; z-index: 50;
+            pointer-events: none;
+        }
 
-        canvas#world { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; }
+        #counter { font-size: 8rem; font-weight: 900; color: #fff; display: none; }
+        #na-bell { font-size: 5rem; font-weight: 900; color: #fff; letter-spacing: 15px; white-space: nowrap; }
+
+        canvas { position: fixed; top: 0; left: 0; z-index: 10; pointer-events: none; }
     </style>
 </head>
 <body>
 
-    <div id="ui-wrapper">
+    <div id="main-container">
         <div id="letter-box">
             <h1>THƯ VUÝP</h1>
             <div class="msg">
@@ -64,118 +69,136 @@
             </div>
             <button id="btn-hide">ẨN THƯ</button>
         </div>
+
+        <div id="display-center">
+            <div id="counter"></div>
+            <div id="na-bell"></div>
+        </div>
     </div>
 
-    <div id="overlay-text">
-        <div id="counter"></div>
-        <div id="na-bell">NA Bell</div>
-    </div>
+    <canvas id="snowCanvas"></canvas>
 
-    <canvas id="world"></canvas>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script>
         const btn = document.getElementById('btn-hide');
         const box = document.getElementById('letter-box');
         const counterEl = document.getElementById('counter');
         const naEl = document.getElementById('na-bell');
-        const canvas = document.getElementById('world');
+        const canvas = document.getElementById('snowCanvas');
+        const ctx = canvas.getContext('2d');
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
 
         btn.addEventListener('click', () => {
             box.style.opacity = '0';
-            box.style.transform = 'scale(0.5)';
             setTimeout(() => {
-                document.getElementById('ui-wrapper').style.display = 'none';
-                startSequence();
-            }, 1000);
+                box.style.display = 'none';
+                startCountdown();
+            }, 800);
         });
 
-        function startSequence() {
+        function startCountdown() {
+            counterEl.style.display = 'block';
             let count = 3;
             let timer = setInterval(() => {
                 if (count > 0) {
                     counterEl.innerText = count;
                 } else {
                     clearInterval(timer);
-                    counterEl.innerText = "";
-                    showNaBell();
+                    counterEl.style.display = 'none';
+                    showNaBellTyping();
                 }
                 count--;
             }, 1000);
         }
 
-        function showNaBell() {
-            naEl.style.display = 'block';
-            setTimeout(() => {
-                naEl.style.transition = '2s';
+        function showNaBellTyping() {
+            const text = "NA Bell";
+            let i = 0;
+            let typeTimer = setInterval(() => {
+                naEl.innerText += text[i];
+                i++;
+                if (i === text.length) {
+                    clearInterval(typeTimer);
+                    setTimeout(disintegrateToFallingSnow, 1500);
+                }
+            }, 500); // Hiện từng chữ chậm rãi
+        }
+
+        function disintegrateToFallingSnow() {
+            html2canvas(naEl, { backgroundColor: null, scale: 2 }).then(cvs => {
+                const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height); // Reset
+                const rect = naEl.getBoundingClientRect();
+                const tempCtx = cvs.getContext('2d');
+                const tempData = tempCtx.getImageData(0, 0, cvs.width, cvs.height);
+
                 naEl.style.opacity = '0';
-                naEl.style.filter = 'blur(20px)';
-                init3DScene(); // Bắt đầu thế giới tuyết 3D
-            }, 2000);
+
+                // Chuyển pixel chữ thành hạt tuyết
+                for (let y = 0; y < cvs.height; y += 4) {
+                    for (let x = 0; x < cvs.width; x += 4) {
+                        const alpha = tempData.data[(y * cvs.width + x) * 4 + 3];
+                        if (alpha > 128) {
+                            particles.push({
+                                x: rect.left + x / 2,
+                                y: rect.top + y / 2,
+                                vx: (Math.random() - 0.5) * 4,
+                                vy: Math.random() * 2 + 1, // Bắt đầu rơi xuống
+                                size: Math.random() * 3 + 1,
+                                opacity: 1
+                            });
+                        }
+                    }
+                }
+
+                // Thêm tuyết nền rơi trắng màn hình
+                for (let i = 0; i < 300; i++) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height - canvas.height,
+                        vx: (Math.random() - 0.5) * 2,
+                        vy: Math.random() * 2 + 2,
+                        size: Math.random() * 3 + 2,
+                        opacity: Math.random()
+                    });
+                }
+
+                animate();
+            });
         }
 
-        function init3DScene() {
-            canvas.style.display = 'block';
-            const scene = new THREE.Scene();
-            const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-            const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
-            renderer.setSize(window.innerWidth, window.innerHeight);
-
-            // Tạo 20,000 hạt tuyết khắp không gian
-            const geometry = new THREE.BufferGeometry();
-            const vertices = [];
-            for (let i = 0; i < 20000; i++) {
-                vertices.push(THREE.MathUtils.randFloatSpread(200)); // X
-                vertices.push(THREE.MathUtils.randFloatSpread(200)); // Y
-                vertices.push(THREE.MathUtils.randFloatSpread(200)); // Z
-            }
-            geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            const material = new THREE.PointsMaterial({ color: 0xFFFFFF, size: 0.2, transparent: true });
-            const points = new THREE.Points(geometry, material);
-            scene.add(points);
+            particles.forEach((p, index) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                
+                // Hiệu ứng gió nhẹ cho tuyết
+                p.vx += Math.sin(p.y * 0.01) * 0.02;
 
-            camera.position.z = 1;
+                // Nếu tuyết rơi khỏi màn hình thì cho rơi lại từ trên
+                if (p.y > canvas.height) {
+                    p.y = -10;
+                    p.x = Math.random() * canvas.width;
+                }
 
-            // Xoay 360 độ bằng tay/chuột
-            let isDragging = false;
-            let targetRotationX = 0;
-            let targetRotationY = 0;
-
-            const updateRotation = (deltaX, deltaY) => {
-                points.rotation.y += deltaX * 0.005;
-                points.rotation.x += deltaY * 0.005;
-            };
-
-            // Sự kiện chuột
-            window.addEventListener('mousedown', () => isDragging = true);
-            window.addEventListener('mouseup', () => isDragging = false);
-            window.addEventListener('mousemove', (e) => {
-                if (isDragging) updateRotation(e.movementX, e.movementY);
+                ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
             });
 
-            // Sự kiện cảm ứng (cho điện thoại)
-            let lastTouchX, lastTouchY;
-            window.addEventListener('touchstart', (e) => {
-                lastTouchX = e.touches[0].clientX;
-                lastTouchY = e.touches[0].clientY;
-            });
-            window.addEventListener('touchmove', (e) => {
-                const deltaX = e.touches[0].clientX - lastTouchX;
-                const deltaY = e.touches[0].clientY - lastTouchY;
-                updateRotation(deltaX, deltaY);
-                lastTouchX = e.touches[0].clientX;
-                lastTouchY = e.touches[0].clientY;
-            });
-
-            function animate() {
-                requestAnimationFrame(animate);
-                points.rotation.y += 0.001; // Tuyết tự xoay nhẹ
-                renderer.render(scene, camera);
-            }
-            animate();
+            requestAnimationFrame(animate);
         }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
