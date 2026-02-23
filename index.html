@@ -10,26 +10,21 @@
         * { box-sizing: border-box; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
         
-        /* Khung thư cố định cực chuẩn */
         #letter-wrapper {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             display: flex; justify-content: center; align-items: center;
-            z-index: 1000; padding: 20px;
+            z-index: 1000;
         }
 
         #letter-box {
             background: rgba(10, 10, 10, 0.98);
-            padding: 40px 30px;
-            border: 2px solid #d4af37;
-            text-align: center;
-            width: 100%;
-            max-width: 450px;
-            border-radius: 12px;
-            box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
-            transition: all 0.8s ease;
+            padding: 40px; border: 2px solid #d4af37;
+            text-align: center; width: 90%; max-width: 450px;
+            border-radius: 12px; box-shadow: 0 0 50px rgba(212, 175, 55, 0.4);
+            transition: 0.8s ease;
         }
 
-        h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.5rem; margin: 0 0 20px 0; letter-spacing: 5px; }
+        h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.5rem; margin: 0 0 20px 0; }
         .msg { color: #eee; line-height: 1.8; font-size: 1.1rem; margin-bottom: 25px; }
 
         .signature {
@@ -40,21 +35,19 @@
         }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 100%; } }
 
-        #btn-hide {
-            background: #fff; color: #000; border: none; padding: 15px 45px;
-            font-weight: 900; cursor: pointer; letter-spacing: 2px; border-radius: 5px;
-            text-transform: uppercase;
-        }
+        #btn-hide { background: #fff; color: #000; border: none; padding: 15px 45px; font-weight: 900; cursor: pointer; border-radius: 5px; }
 
-        /* Khu vực hiện 3 2 1 và NA Bell */
         #overlay-ui {
             position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            text-align: center; z-index: 500; pointer-events: none; color: #fff;
+            text-align: center; z-index: 500; pointer-events: none;
         }
         #counter { font-size: 9rem; font-weight: 900; color: #fff; }
-        #na-bell { font-size: 4.5rem; font-weight: 900; letter-spacing: 12px; white-space: nowrap; opacity: 1; transition: opacity 1.5s; }
+        #na-bell { 
+            font-size: 4.5rem; font-weight: 900; letter-spacing: 12px; color: #fff;
+            opacity: 0; transition: opacity 1s ease-in-out;
+        }
 
-        canvas#world { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10; cursor: move; }
+        canvas#world { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10; }
     </style>
 </head>
 <body>
@@ -93,7 +86,6 @@
 
         btn.addEventListener('click', () => {
             wrapper.style.opacity = '0';
-            wrapper.style.pointerEvents = 'none';
             setTimeout(() => {
                 wrapper.style.display = 'none';
                 startSequence();
@@ -115,6 +107,7 @@
         }
 
         function showNaBellTyping() {
+            naEl.style.opacity = "1";
             const text = "NA Bell";
             let i = 0;
             let typeTimer = setInterval(() => {
@@ -122,14 +115,14 @@
                 i++;
                 if (i === text.length) {
                     clearInterval(typeTimer);
-                    // Sau khi hiện xong 1.5s thì cho tan biến hẳn
+                    // CHỜ XONG RỒI TAN BIẾN
                     setTimeout(() => {
-                        naEl.style.opacity = '0';
+                        naEl.style.opacity = '0'; // Làm mờ đi
                         setTimeout(() => {
-                            naEl.innerText = ""; // Xóa hẳn chữ
-                            init3DSnow(); // Bật tuyết
-                        }, 1500);
-                    }, 1500);
+                            naEl.innerText = ""; // XÓA HẲN CHỮ
+                            init3DSnow(); // SAU ĐÓ MỚI HIỆN TUYẾT
+                        }, 1000);
+                    }, 2000);
                 }
             }, 500);
         }
@@ -149,12 +142,12 @@
                 positions[i * 3] = (Math.random() - 0.5) * 100;
                 positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
                 positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
-                vels[i] = Math.random() * 0.08 + 0.03; 
+                vels[i] = Math.random() * 0.1 + 0.05; 
             }
 
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.18, transparent: true, opacity: 0.9 });
+            const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.2, transparent: true, opacity: 0.9 });
             const snow = new THREE.Points(geometry, material);
             scene.add(snow);
 
@@ -190,7 +183,6 @@
             }
             animate();
 
-            // Fix lỗi load lại khi resize
             window.addEventListener('resize', () => {
                 camera.aspect = window.innerWidth / window.innerHeight;
                 camera.updateProjectionMatrix();
