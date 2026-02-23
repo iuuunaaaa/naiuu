@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gửi Na Thân Thương</title>
+    <title>Gửi Na - Dear My Love</title>
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #0d0d0d; /* Nền tối siêu đẹp */
-            color: #ffffff;
-            font-family: 'Arial', sans-serif;
+            background: radial-gradient(circle, #1a1a1a 0%, #000000 100%);
+            color: #fff;
+            font-family: 'Times New Roman', Times, serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -18,84 +18,108 @@
             overflow: hidden;
         }
 
-        #letter-container {
-            width: 85%;
-            max-width: 500px;
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.2);
+        /* Giao diện lá thư sang chảnh */
+        #envelope {
+            width: 90%;
+            max-width: 550px;
+            background: #fdfcf0; /* Màu giấy cũ sang trọng */
+            padding: 50px;
+            border-radius: 5px;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.1);
+            color: #2c3e50;
             text-align: center;
-            border: 1px solid #333;
-            z-index: 10;
+            position: relative;
+            transition: all 0.8s ease-in-out;
+            border: 1px solid #d4af37;
         }
 
-        h1 { color: #f1c40f; margin-bottom: 15px; }
-        p { line-height: 1.8; color: #ccc; }
+        h1 { font-style: italic; color: #b8860b; border-bottom: 1px solid #d4af37; padding-bottom: 10px; }
+        
+        .content {
+            font-size: 1.2rem;
+            line-height: 2;
+            text-align: left;
+            margin: 20px 0;
+        }
 
-        #hide-btn {
-            margin-top: 25px;
-            padding: 10px 40px;
-            background: #f1c40f;
+        #open-btn {
+            background: #b8860b;
+            color: white;
             border: none;
-            border-radius: 50px;
-            font-weight: bold;
+            padding: 15px 40px;
+            font-size: 1rem;
             cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             transition: 0.3s;
+            margin-top: 20px;
         }
 
-        #hide-btn:hover { transform: scale(1.1); background: #fff; }
+        #open-btn:hover { background: #8b6508; box-shadow: 0 0 20px #b8860b; }
 
-        /* Ẩn iframe nhạc đi cho chuyên nghiệp */
-        #music-box {
-            display: none;
-        }
-
-        #main-content {
+        /* Màn hình sau khi mở */
+        #player-screen {
             display: none;
             text-align: center;
+            animation: fadeIn 2s forwards;
         }
+
+        @keyframes fadeIn { from {opacity: 0;} to {opacity: 1;} }
+
+        /* Ẩn trình phát nhạc */
+        #yt-player { position: absolute; top: -9999px; left: -9999px; }
     </style>
 </head>
 <body>
 
-    <div id="letter-container">
-        <h1>Gửi Na...</h1>
-        <p>
-            Chúc Na một ngày thật tuyệt vời và tràn đầy niềm vui. <br>
-            Hy vọng món quà nhỏ này sẽ làm Na mỉm cười!
-        </p>
-        <button id="hide-btn">Mở quà nè</button>
+    <div id="envelope">
+        <h1>Dear Na,</h1>
+        <div class="content">
+            "Giữa hàng tỷ người trên thế giới, có những cuộc gặp gỡ là định mệnh. Gửi đến Na những lời chúc chân thành nhất, hy vọng mỗi ngày trôi qua với Na đều là một bản nhạc dịu dàng và hạnh phúc..."
+        </div>
+        <p style="text-align: right; font-weight: bold;">- Từ một người luôn dõi theo Na -</p>
+        <button id="open-btn">Mở Quà Nhé</button>
     </div>
 
-    <div id="main-content">
-        <h2 style="color: #f1c40f;">Đang phát nhạc dành cho Na...</h2>
-        <p>Lắng nghe giai điệu này nhé!</p>
+    <div id="player-screen">
+        <h2 style="color: #d4af37;">Đang phát bản nhạc dành riêng cho Na</h2>
+        <p>Hãy tận hưởng khoảnh khắc này nhé...</p>
     </div>
 
-    <div id="music-box">
-        <iframe id="youtube-audio" 
-            src="https://www.youtube.com/embed/8fGulQZ0QHY?enablejsapi=1" 
-            allow="autoplay">
-        </iframe>
-    </div>
+    <div id="yt-player"></div>
 
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        const btn = document.getElementById('hide-btn');
-        const letter = document.getElementById('letter-container');
-        const content = document.getElementById('main-content');
-        const iframe = document.getElementById('youtube-audio');
+        let player;
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-player', {
+                height: '0',
+                width: '0',
+                videoId: '8fGulQZ0QHY', // ID bài nhạc của anh
+                playerVars: {
+                    'autoplay': 0,
+                    'controls': 0,
+                    'loop': 1,
+                    'playlist': '8fGulQZ0QHY'
+                }
+            });
+        }
 
-        btn.addEventListener('click', () => {
-            // Ẩn lá thư và hiện nội dung mới
-            letter.style.display = 'none';
-            content.style.display = 'block';
-
-            // Địt mẹ, kích hoạt nhạc ngay lập tức
-            let musicSrc = iframe.src;
-            iframe.src = musicSrc + "&autoplay=1&loop=1&playlist=8fGulQZ0QHY";
+        document.getElementById('open-btn').addEventListener('click', function() {
+            // Ẩn thư
+            document.getElementById('envelope').style.transform = 'scale(0)';
+            document.getElementById('envelope').style.opacity = '0';
+            
+            setTimeout(() => {
+                document.getElementById('envelope').style.display = 'none';
+                document.getElementById('player-screen').style.display = 'block';
+                
+                // Địt mẹ, nhạc lên!
+                if (player && player.playVideo) {
+                    player.playVideo();
+                }
+            }, 800);
         });
     </script>
-
 </body>
 </html>
