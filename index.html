@@ -2,56 +2,80 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>THƯ VUÝP - VIN SÌ KE</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&family=Playfair+Display:wght@700&display=swap');
         
+        * { box-sizing: border-box; }
         body, html { margin: 0; padding: 0; width: 100%; height: 100%; background: #000; overflow: hidden; font-family: 'Montserrat', sans-serif; }
         
-        #letter-box {
-            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(15, 15, 15, 0.95); padding: 40px; border: 2px solid #d4af37;
-            text-align: center; max-width: 450px; border-radius: 5px; z-index: 100;
+        /* Cố định khung thư chuẩn cơm mẹ nấu */
+        #letter-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; padding: 20px;
         }
 
-        h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.2rem; margin-bottom: 20px; letter-spacing: 5px; }
-        .msg { color: #ccc; line-height: 1.8; margin-bottom: 25px; }
+        #letter-box {
+            background: rgba(15, 15, 15, 0.98);
+            padding: 40px 30px;
+            border: 2px solid #d4af37;
+            text-align: center;
+            width: 100%;
+            max-width: 450px;
+            border-radius: 12px;
+            box-shadow: 0 0 50px rgba(212, 175, 55, 0.3);
+            transition: opacity 0.8s, transform 0.8s;
+        }
+
+        h1 { font-family: 'Playfair Display', serif; color: #d4af37; font-size: 2.2rem; margin: 0 0 20px 0; letter-spacing: 5px; }
+        .msg { color: #eee; line-height: 1.8; font-size: 1rem; margin-bottom: 25px; text-align: center; }
 
         .signature {
-            display: block; font-size: 1.4rem; font-weight: 900; margin-top: 15px;
+            display: block; font-size: 1.5rem; font-weight: 900; margin-top: 15px;
             background: linear-gradient(to right, red, orange, yellow, green, blue, purple, red);
             background-size: 400%; -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             animation: rainbow 0.6s linear infinite;
         }
         @keyframes rainbow { 0% { background-position: 0%; } 100% { background-position: 100%; } }
 
-        #btn-hide { background: #fff; color: #000; border: none; padding: 12px 40px; font-weight: 900; cursor: pointer; }
+        #btn-hide {
+            background: #fff; color: #000; border: none; padding: 15px 45px;
+            font-weight: 900; cursor: pointer; letter-spacing: 2px; border-radius: 5px;
+            text-transform: uppercase; transition: 0.3s;
+        }
 
-        #display-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; z-index: 50; pointer-events: none; color: #fff; }
+        /* Màn hình 3 2 1 và NA Bell */
+        #overlay-ui {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            text-align: center; z-index: 500; pointer-events: none; color: #fff;
+        }
         #counter { font-size: 8rem; font-weight: 900; }
-        #na-bell { font-size: 4rem; font-weight: 900; letter-spacing: 15px; white-space: nowrap; }
+        #na-bell { font-size: 4rem; font-weight: 900; letter-spacing: 12px; white-space: nowrap; }
 
-        canvas#world { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; cursor: grab; }
+        canvas#world { position: fixed; top: 0; left: 0; width: 100%; height: 100%; display: none; z-index: 10; cursor: move; }
     </style>
 </head>
 <body>
 
-    <div id="letter-box">
-        <h1>THƯ VUÝP</h1>
-        <div class="msg">
-            Na Ơi Iu Na Bell! <br>
-            Chúc Na Mau Lớn Mau Cao Mau Mặp Mặp <br>
-            Học Giỏi Tí Cho Đẳng Cấp <br>
-            Nghiện Game Hơn Cho Bá Sàn, <br>
-            Luôn Luôn Tươi Cười Nhé <br>
-            Vin Sike Love Na Bell!
-            <span class="signature">By Vin Sì Ke</span>
+    <div id="letter-wrapper">
+        <div id="letter-box">
+            <h1>THƯ VUÝP</h1>
+            <div class="msg">
+                Na Ơi Iu Na Bell! <br>
+                Chúc Na Mau Lớn Mau Cao Mau Mặp Mặp <br>
+                Học Giỏi Tí Cho Đẳng Cấp <br>
+                Nghiện Game Hơn Cho Bá Sàn, <br>
+                Luôn Luôn Tươi Cười Nhé <br>
+                Vin Sike Love Na Bell!
+                <span class="signature">By Vin Sì Ke</span>
+            </div>
+            <button id="btn-hide">ẨN THƯ</button>
         </div>
-        <button id="btn-hide">ẨN THƯ</button>
     </div>
 
-    <div id="display-center">
+    <div id="overlay-ui">
         <div id="counter"></div>
         <div id="na-bell"></div>
     </div>
@@ -62,14 +86,18 @@
 
     <script>
         const btn = document.getElementById('btn-hide');
-        const box = document.getElementById('letter-box');
+        const wrapper = document.getElementById('letter-wrapper');
         const counterEl = document.getElementById('counter');
         const naEl = document.getElementById('na-bell');
         const canvas = document.getElementById('world');
 
         btn.addEventListener('click', () => {
-            box.style.display = 'none';
-            startSequence();
+            wrapper.style.opacity = '0';
+            wrapper.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                wrapper.style.display = 'none';
+                startSequence();
+            }, 800);
         });
 
         function startSequence() {
@@ -94,7 +122,8 @@
                 if (i === text.length) {
                     clearInterval(typeTimer);
                     setTimeout(() => {
-                        naEl.style.display = 'none';
+                        naEl.style.transition = '1.5s';
+                        naEl.style.opacity = '0';
                         init3DSnow();
                     }, 1500);
                 }
@@ -108,75 +137,62 @@
             const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
 
-            const particlesCount = 15000;
+            const particlesCount = 12000;
             const positions = new Float32Array(particlesCount * 3);
-            const velocities = new Float32Array(particlesCount); // Tốc độ rơi riêng từng hạt
+            const vels = new Float32Array(particlesCount);
 
             for (let i = 0; i < particlesCount; i++) {
-                positions[i * 3] = (Math.random() - 0.5) * 100;     // X
-                positions[i * 3 + 1] = Math.random() * 100;        // Y (bắt đầu từ trên)
-                positions[i * 3 + 2] = (Math.random() - 0.5) * 100; // Z
-                velocities[i] = Math.random() * 0.05 + 0.02;       // Tốc độ rơi nhỏ, mịn
+                positions[i * 3] = (Math.random() - 0.5) * 100;
+                positions[i * 3 + 1] = (Math.random() - 0.5) * 100;
+                positions[i * 3 + 2] = (Math.random() - 0.5) * 100;
+                vels[i] = Math.random() * 0.08 + 0.03; // Tuyết rơi mượt
             }
 
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-            const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.05, transparent: true, opacity: 0.8 });
+            // Tuyết to hơn một xíu theo ý anh (size 0.15)
+            const material = new THREE.PointsMaterial({ color: 0xffffff, size: 0.15, transparent: true, opacity: 0.8 });
             const snow = new THREE.Points(geometry, material);
             scene.add(snow);
 
             camera.position.z = 5;
 
-            // Xoay bằng tay/chuột
+            // Xoay 360 độ thủ công
             let isDragging = false;
-            let previousMouseX = 0;
-            let previousMouseY = 0;
+            let prevX = 0, prevY = 0;
+
+            const onMove = (x, y) => {
+                if (isDragging) {
+                    snow.rotation.y += (x - prevX) * 0.005;
+                    snow.rotation.x += (y - prevY) * 0.005;
+                }
+                prevX = x; prevY = y;
+            };
 
             window.addEventListener('mousedown', () => isDragging = true);
             window.addEventListener('mouseup', () => isDragging = false);
-            window.addEventListener('mousemove', (e) => {
-                if (isDragging) {
-                    const deltaX = e.clientX - previousMouseX;
-                    const deltaY = e.clientY - previousMouseY;
-                    snow.rotation.y += deltaX * 0.005;
-                    snow.rotation.x += deltaY * 0.005;
-                }
-                previousMouseX = e.clientX;
-                previousMouseY = e.clientY;
-            });
+            window.addEventListener('mousemove', (e) => onMove(e.clientX, e.clientY));
 
-            // Touch cho điện thoại
-            window.addEventListener('touchstart', (e) => {
-                isDragging = true;
-                previousMouseX = e.touches[0].clientX;
-                previousMouseY = e.touches[0].clientY;
-            });
+            window.addEventListener('touchstart', (e) => { isDragging = true; prevX = e.touches[0].clientX; prevY = e.touches[0].clientY; });
             window.addEventListener('touchend', () => isDragging = false);
-            window.addEventListener('touchmove', (e) => {
-                if (isDragging) {
-                    const deltaX = e.touches[0].clientX - previousMouseX;
-                    const deltaY = e.touches[0].clientY - previousMouseY;
-                    snow.rotation.y += deltaX * 0.005;
-                    snow.rotation.x += deltaY * 0.005;
-                    previousMouseX = e.touches[0].clientX;
-                    previousMouseY = e.touches[0].clientY;
-                }
-            });
+            window.addEventListener('touchmove', (e) => onMove(e.touches[0].clientX, e.touches[0].clientY));
 
             function animate() {
                 requestAnimationFrame(animate);
-
-                const positions = geometry.attributes.position.array;
+                const pos = geometry.attributes.position.array;
                 for (let i = 0; i < particlesCount; i++) {
-                    positions[i * 3 + 1] -= velocities[i]; // Rơi xuống
-                    if (positions[i * 3 + 1] < -50) positions[i * 3 + 1] = 50; // Quay lại đỉnh
+                    pos[i * 3 + 1] -= vels[i];
+                    if (pos[i * 3 + 1] < -50) pos[i * 3 + 1] = 50;
                 }
                 geometry.attributes.position.needsUpdate = true;
-
                 renderer.render(scene, camera);
             }
             animate();
         }
+
+        window.addEventListener('resize', () => {
+            if(canvas.style.display === 'block') location.reload();
+        });
     </script>
 </body>
 </html>
